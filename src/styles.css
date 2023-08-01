@@ -28,11 +28,11 @@
 
 }
 
-#output-screen{
-    background-color: antiquewhite;
+.output-screen{
     width: 75vw;
     height: 90vh;
     margin: 2%;
+    display: flex;
 }
 
 #keypad{
@@ -48,4 +48,20 @@
     
     display: flex;
     justify-content: left;
+}
+
+.welcome{
+    width: 50%;
+    height: 100%;
+    background-color: #76C0DB;
+    position:relative;
+}
+
+.card{
+    width: 30%;
+    height:20vh;
+    border-radius: 10px;
+    background-color: bisque;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    margin-bottom: 4%;
 }

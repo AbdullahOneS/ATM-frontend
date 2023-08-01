@@ -1,13 +1,17 @@
 import React from 'react'
 import '../styles.css'
 import Keys from '../Components/Keys'
+import Welcome from '../Components/Welcome'
+import InsertCard from './InsertCard'
 
 const Homepage = () => {
   return (
     <>
         <div className='home'>
 
-        <div id='output-screen'></div>
+        {/* <div id='output-screen'></div> */}
+        {/* <Welcome/> */}
+        <InsertCard/>
         <div id='keypad'>
 
             <div>
