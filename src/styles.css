@@ -1,0 +1,51 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.home{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.key{
+    width: 55px;
+    height: 40px;
+    border: 4px double black;
+    box-shadow: 2px 2px 2px  rgba(42, 39, 39);
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items:center;
+    font-weight: bolder;
+    font-size: x-large;
+    padding: 3%;
+    margin: 1%;
+    border-radius: 15%;
+    background-color: #D5D3D6;
+
+}
+
+#output-screen{
+    background-color: antiquewhite;
+    width: 75vw;
+    height: 90vh;
+    margin: 2%;
+}
+
+#keypad{
+    background-color: #fdfdfd;
+    width: 25vw;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.keypad-row{
+    
+    display: flex;
+    justify-content: left;
+}
