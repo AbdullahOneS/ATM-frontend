@@ -6,7 +6,9 @@ import { DownloadOutlined } from '@ant-design/icons';
 import atm from '../images/atmImageForWelcomepage.png'
 const Welcome = () => {
   return (
-    <div className='output-screen'>
+    <>
+
+    {/* <div className='output-screen'> */}
         <div className='welcome' style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
         <img src={atm} alt="" width="100%"/>
           {/* <img src='src\images\atmImageForWelcomepage.png' alt="" srcset=""  width='100%' height='100%'/> */}
@@ -19,7 +21,8 @@ const Welcome = () => {
             Insert Card
           </Button>
         </div>
-    </div>
+    {/* // </div> */}
+    </>
   )
 }
 

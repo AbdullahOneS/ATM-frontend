@@ -1,11 +1,16 @@
 import React,{useState,useEffect} from 'react'
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
+import Card from '../Components/Card'
 
 const InsertCard = () => {
 
     const [form] = Form.useForm();
     const [, forceUpdate] = useState({});
+    const [cardDetails,setCardDetails]=useState({
+      cardNo : '',
+      cardHolderName:''
+    })
   
     // To disable submit button at the beginning.
     useEffect(() => {
@@ -16,20 +21,22 @@ const InsertCard = () => {
     };
 
   return (
+    <>
+      <div style={{display:'flex',justifyContent:'center',alignItems:'center',width:'100%',height:'100%'}}>
     <div style={{display:"flex",justifyContent:"center",alignItems:"center",flexDirection:"column",width:"80%"}}>
-        <div className='card'></div>
-        <div style={{boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;", width:"50%",backgroundColor:"whitesmoke",padding:"2%"}} >
+        <div className='card'><Card/></div>
+        <div style={{boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;", width:"50%",backgroundColor:"whitesmoke",padding:"2%",marginTop:'3%'}} >
         <Form form={form} name="horizontal_login" onFinish={onFinish}>
       <Form.Item
-        name="AccountNumber"
+        name="CardNumber"
         rules={[
           {
             required: true,
-            message: 'Please input your account no!',
+            message: 'Please input your card number!',
           },
         ]}
       >
-        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Account Number" />
+        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Card Number" value={cardDetails.cardNo} />
       </Form.Item>
       {/* <Form.Item
         name="password"
@@ -63,6 +70,8 @@ const InsertCard = () => {
     </Form>
         </div>
     </div>
+    </div>
+    </>
   )
 }
 
