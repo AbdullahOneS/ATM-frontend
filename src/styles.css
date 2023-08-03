@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Agdasima&family=Oswald:wght@200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap');
+
 *{
     margin: 0;
     padding: 0;
@@ -35,6 +38,7 @@
     border-radius: 10px;
     /* background-color: #76C0DB; */
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    overflow: hidden;
 }
 
 #keypad{

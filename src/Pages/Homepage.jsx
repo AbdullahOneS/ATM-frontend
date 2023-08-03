@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles.css";
 import Keys from "../Components/Keys";
 import Welcome from "../Components/Welcome";
@@ -10,10 +10,21 @@ import Error from "../Components/Error";
 import Receipt from "../Components/Receipt";
 
 const Homepage = () => {
+  const [currentComponent, setCurrentComponent] = useState("");
+  const handleChange = (Component) => {
+    console.log(Component);
+    setCurrentComponent(Component);
+  };
+
   return (
     <>
       <div className="home">
         <div id="output-screen">
+          {currentComponent === "" ? (
+            <Welcome handleChange={handleChange} />
+          ) : (
+            currentComponent
+          )}
           {/* <Welcome /> */}
           {/* <InsertCard title="Card number" /> */}
           {/* <Options Type="Accounttype" /> */}
@@ -26,7 +37,7 @@ const Homepage = () => {
           {/* <InputField message="Enter OTP" /> */}
           {/* <InputField message="Enter Account Number" /> */}
           {/* <Error message={"Balance insufficient! Try Less Amount"} /> */}
-          <Receipt />
+          {/* <Receipt /> */}
         </div>
 
         <div id="keypad">

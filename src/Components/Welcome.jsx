@@ -5,7 +5,7 @@ import { DownloadOutlined } from "@ant-design/icons";
 import InsertCard from "../Pages/InsertCard";
 
 import atm from "../images/atmImageForWelcomepage.png";
-const Welcome = () => {
+const Welcome = ({ handleChange }) => {
   return (
     <>
       {/* <div className='output-screen'> */}
@@ -20,7 +20,7 @@ const Welcome = () => {
         <img src={atm} alt="" width="100%" />
         {/* <img src='src\images\atmImageForWelcomepage.png' alt="" srcset=""  width='100%' height='100%'/> */}
       </div>
-      <div style={{ padding: "10%" }}>
+      <div style={{ padding: "10%", fontFamily: "Arvo, serif" }}>
         <h1>Welcome To</h1>
         <h2>ABC Bank</h2>
         <Button
@@ -33,6 +33,7 @@ const Welcome = () => {
             left: "45%",
             width: "20%",
           }}
+          onClick={() => handleChange(<InsertCard title="Card number" />)}
         >
           Insert Card
         </Button>
