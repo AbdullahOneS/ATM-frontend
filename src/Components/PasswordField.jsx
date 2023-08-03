@@ -55,6 +55,7 @@ const PasswordField = ({ message }) => {
           value={inputValue}
           onChange={handleInput}
           className="amount-input"
+          suffix={onclick=()=>{}}
         />
       </Form.Item>
       <div />

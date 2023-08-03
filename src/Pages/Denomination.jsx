@@ -5,7 +5,7 @@ import Rupee500 from "../images/500-rupee.png";
 import Rupee2000 from "../images/2000-rupee.png";
 import { Button } from "antd";
 
-const Denomination = ({ amount }) => {
+const Denomination = ({ amount,page,handlePageChange }) => {
   const [message, setMessage] = useState(
     "Error! Selected Denomination not available"
   );
@@ -66,7 +66,7 @@ const Denomination = ({ amount }) => {
           </div>
         </div>
         <div style={{ display: "flex", justifyContent: "right" }}>
-          <div
+          {page == "withdrawal"?(<div
             style={{
               backgroundColor: "#0E77BD",
               width: "200px",
@@ -77,9 +77,24 @@ const Denomination = ({ amount }) => {
               color: "white",
               borderRadius: "10px",
             }}
+            onClick={()=>handlePageChange("InputFieldEnterPin")}
           >
             Proceed
-          </div>
+          </div>):(<div
+            style={{
+              backgroundColor: "#0E77BD",
+              width: "200px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "40px",
+              color: "white",
+              borderRadius: "10px",
+            }}
+            onClick={()=>handlePageChange("InputFieldEnterPin")}
+          >
+            Proceed
+          </div>)}
         </div>
       </div>
     </>

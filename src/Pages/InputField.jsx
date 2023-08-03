@@ -2,7 +2,8 @@ import React from "react";
 import DetailField from "../Components/DetailField";
 import PasswordField from "../Components/PasswordField";
 
-const InputField = ({ message, Transactiontype }) => {
+const InputField = ({ message, Transactiontype,handlePageChange }) => {
+  let page = "";
   let input = "";
   let buttonText = "";
   let resendotpLink = "";
@@ -14,12 +15,12 @@ const InputField = ({ message, Transactiontype }) => {
     transferBlock = (
       <div
         style={{
-          color: "white",
+          color: "black",
           fontSize: "x-large",
           textAlign: "center",
           padding: "1%",
           margin: "1%",
-          backgroundColor: "red",
+          backgroundColor: "#ffe484",
         }}
       >
         Transferring to {AccountHolderName}
@@ -28,15 +29,19 @@ const InputField = ({ message, Transactiontype }) => {
   }
   if (message === "Enter Amount") {
     input = <DetailField message={message} />;
+    page = "InputFieldEnterPin";
     buttonText = "Proceed";
   } else if (message === "Enter Pin") {
-    input = <PasswordField message="pin" />;
+    input = <PasswordField message="pin"/>;
+    page = "ReceiptW";
     buttonText = "Proceed";
   } else if (message === "Enter Account Number") {
-    input = <DetailField message={message} />;
+    input = <DetailField message={message}/>;
+    page = "InputFieldEnterAmount"
     buttonText = "Proceed";
   } else {
-    input = <PasswordField message="otp" />;
+    input = <PasswordField message="otp"/>;
+    page = "ReceiptW"
     buttonText = "Verify";
     resendotpLink = (
       <div
@@ -120,6 +125,7 @@ const InputField = ({ message, Transactiontype }) => {
                   color: "white",
                   borderRadius: "5px",
                 }}
+                onClick={()=>handlePageChange(page)}
               >
                 {buttonText}
               </div>

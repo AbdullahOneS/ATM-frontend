@@ -19,6 +19,18 @@ export default class Export extends Component {
   }
 
   render() {
+    const {
+      cardHolderName,
+      Date,
+      transactionID,
+      CardNo,
+      type,
+      ReceiverAccountHolder,
+      amount,
+      status,
+      balance,
+      handlePageChange,
+    } = this.props;
     return (
       <div
         style={{
@@ -51,7 +63,17 @@ export default class Export extends Component {
                 alignItems: "center",
               }}
             >
-              <ReceiptTemplate />
+              <ReceiptTemplate
+cardHolderName={cardHolderName}
+Date={Date}
+transactionID={transactionID}
+CardNo={CardNo}
+type={type}
+amount={amount}
+status={status}
+balance={balance}
+ReceiverAccountHolder={ReceiverAccountHolder}
+/>
             </div>
           </div>
           <div style={{ padding: "10%" }}>
@@ -65,6 +87,7 @@ export default class Export extends Component {
             <button
               className="OptionButton"
               style={{ outline: "none", border: "none", marginTop: "10%" }}
+              onClick={()=>handlePageChange("Welcome")}
             >
               Continue
             </button>

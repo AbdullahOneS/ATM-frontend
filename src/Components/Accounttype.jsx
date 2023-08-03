@@ -1,12 +1,12 @@
 import React from 'react'
 
-const Accounttype = () => {
+const Accounttype = ({handlePageChange}) => {
   return (
     <>
-        <div className='OptionButton'>
+        <div className='OptionButton' onClick={()=>handlePageChange("OptionsTT")}>
             Savings
         </div>
-        <div className='OptionButton'>
+        <div className='OptionButton' onClick={()=>handlePageChange("OptionsTT")}>
             Current
         </div>
     </>

@@ -2,17 +2,46 @@ import React, { useState, useEffect } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import Card from "../Components/Card";
+import Options from "./Options";
 
-const InsertCard = ({ title }) => {
+import axios from "axios";
+import Api from "../Api";
+
+const InsertCard = ({ title,handlePageChange }) => {
   let limit;
   let cardHolder = "";
-
+  // console.log(handleChange)
   if (title === "Card number") {
     limit = 16;
   }
   const [form] = Form.useForm();
   const [, forceUpdate] = useState({});
   const [cardNo, setcardNo] = useState("");
+
+  //to call verify API
+
+  const cardVerify = async()=>{
+    try {
+      var result =  await Api.post("card/verify",{
+        card_no:cardNo
+      }
+      );
+      if(result.data.status == 200){
+        handlePageChange("OptionsAT")
+      }
+      else{
+        handlePageChange('Error')
+      }
+      console.log(result.data);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // cardVerify()
+
+
 
   // To disable submit button at the beginning.
   useEffect(() => {
@@ -52,6 +81,7 @@ const InsertCard = ({ title }) => {
           alignItems: "center",
           width: "100%",
           height: "100%",
+          backgroundColor:"#76C0DB"
         }}
       >
         <div
@@ -116,11 +146,14 @@ const InsertCard = ({ title }) => {
                     type="primary"
                     htmlType="submit"
                     disabled={
-                      !form.isFieldsTouched(true) ||
+                      !form.isFieldsTouched(true)|| form.value < 16 ||
                       !!form
                         .getFieldsError()
                         .filter(({ errors }) => errors.length).length
                     }
+                    onClick={()=>{
+                      cardVerify()
+                    }}
                   >
                     Log in
                   </Button>

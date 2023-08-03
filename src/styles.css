@@ -232,3 +232,9 @@
 button{
     border-radius: 5px;
 }
+
+.btn{
+    outline: none;
+    border: none;
+    margin: 0.5%;
+}

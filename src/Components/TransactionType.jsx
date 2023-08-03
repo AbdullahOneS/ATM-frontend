@@ -1,12 +1,12 @@
 import React from 'react'
 
-const TransactionType = () => {
+const TransactionType = ({handlePageChange}) => {
   return (
     <>
-        <div className='OptionButton'>Withdrawal</div>
-        <div className='OptionButton'>Deposit</div>
-        <div className='OptionButton'>Balance Inquiry</div>
-        <div className='OptionButton'>Fund Transfer</div>
+        <div className='OptionButton' onClick={()=>handlePageChange("Denominationw")}>Withdrawal</div>
+        <div className='OptionButton'onClick={()=>handlePageChange("Denominationd")}>Deposit</div>
+        <div className='OptionButton'onClick={()=>handlePageChange("InputFieldEnterPin")}>Balance Inquiry</div>
+        <div className='OptionButton'onClick={()=>handlePageChange("InputFieldEnterAccNo")}>Fund Transfer</div>
     </>
   )
 }

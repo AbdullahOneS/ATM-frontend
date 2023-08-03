@@ -2,12 +2,19 @@ import React from "react";
 import Card from "../Components/Card";
 import Accounttype from "../Components/Accounttype";
 import TransactionType from "../Components/TransactionType";
-const Options = ({ Type }) => {
+const Options = ({ Type ,handlePageChange}) => {
   let type = "";
   if (Type === "Accounttype") {
-    type = <Accounttype />;
+    type = <div>
+      <div className='OptionButton' onClick={()=>handlePageChange("OptionsTT")}>
+            Savings
+        </div>
+        <div className='OptionButton' onClick={()=>handlePageChange("OptionsTT")}>
+            Current
+        </div>
+    </div>;
   } else {
-    type = <TransactionType />;
+    type = <TransactionType handlePageChange={handlePageChange}/>;
   }
   return (
     <>

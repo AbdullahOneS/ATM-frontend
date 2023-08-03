@@ -8,6 +8,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.8.0",
+    "axios": "^1.4.0",
     "html-to-pdfmake": "^2.4.22",
     "jspdf": "^2.5.1",
     "pdfmake": "^0.2.7",

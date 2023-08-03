@@ -5,7 +5,8 @@ import { DownloadOutlined } from "@ant-design/icons";
 import InsertCard from "../Pages/InsertCard";
 
 import atm from "../images/atmImageForWelcomepage.png";
-const Welcome = ({ handleChange }) => {
+const Welcome = ({handlePageChange}) => {
+
   return (
     <>
       {/* <div className='output-screen'> */}
@@ -33,7 +34,8 @@ const Welcome = ({ handleChange }) => {
             left: "45%",
             width: "20%",
           }}
-          onClick={() => handleChange(<InsertCard title="Card number" />)}
+
+          onClick={()=>handlePageChange("InsertCard")}
         >
           Insert Card
         </Button>

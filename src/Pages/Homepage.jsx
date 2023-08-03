@@ -10,34 +10,142 @@ import Error from "../Components/Error";
 import Receipt from "../Components/Receipt";
 
 const Homepage = () => {
-  const [currentComponent, setCurrentComponent] = useState("");
-  const handleChange = (Component) => {
-    console.log(Component);
-    setCurrentComponent(Component);
+
+  const [pages, setPages] = useState({
+    Welcome:true,
+    InsertCard:false,
+    OptionsAT:false,
+    OptionsTT:false,
+    Denominationw:false,
+    Denominationd:false,
+    InputFieldTTtransfer:false,
+    InputFieldEnterAmount:false,
+    InputFieldEnterPin:false,
+    InputFieldEnterOTP:false,
+    InputFieldEnterAccNo:false,
+    Error:false,
+    ReceiptInq:false,
+    ReceiptFndT:false,
+    ReceiptDep:false,
+    ReceiptW:false,
+
+  })
+
+
+  // const handleWelcome = (currentPage)=>{
+  //   setPages((pre)=>({
+  //     ...pre,
+  //     Welcome:true,
+  //     currentPage:false
+  //   }))
+  // }
+  // const handleInsertCard = (currentPage)=>{
+  //   setPages((pre)=>({
+  //     ...pre,
+  //     Welcome:false,
+  //     InsertCard:true,
+  //     OptionsAT:false,
+  //     OptionsTT:false,
+  //     DenominationW:false,
+  //     DenominationD:false,
+  //     InputFieldTTtransfer:false,
+  //     InputFieldEnterAmount:false,
+  //     InputFieldEnterPin:false,
+  //     InputFieldEnterOTP:false,
+  //     InputFieldEnterAccNo:false,
+  //     Error:false,
+  //     Receipt:false
+  //   }))
+  // }
+  // const handleOptionsAccountType = (currentPage)=>{
+  //   setPages((pre)=>({
+  //     ...pre,
+  //     OptionsAT:true,
+  //     currentPage:false
+  //   }))
+  // }
+
+
+  const handlePageChange = (pageKey) => {
+    setPages((prevPages) => {
+      const updatedPages = { ...prevPages };
+      for (const key in updatedPages) {
+        updatedPages[key] = key === pageKey;
+      }
+      return updatedPages;
+    });
   };
 
   return (
     <>
       <div className="home">
         <div id="output-screen">
-          {currentComponent === "" ? (
+          {/* {currentComponent === "" ? (
             <Welcome handleChange={handleChange} />
           ) : (
             currentComponent
-          )}
-          {/* <Welcome /> */}
-          {/* <InsertCard title="Card number" /> */}
-          {/* <Options Type="Accounttype" /> */}
-          {/* <Options Type="Transactiontype" /> */}
+          )} */}
+          {pages.Welcome?<Welcome handlePageChange={handlePageChange}/>:''}
+          {pages.InsertCard?<InsertCard title="Card number" handlePageChange={handlePageChange}/>:''}
+          {pages.OptionsAT?<Options Type="Accounttype" handlePageChange={handlePageChange}/>:''}
+          {pages.OptionsTT?<Options Type="Transactiontype" handlePageChange={handlePageChange}/>:''}
 
-          {/* <Denomination amount="2000" /> */}
-          {/* <InputField message="Enter Amount" Transactiontype="transfer" /> */}
-          {/* <InputField message="Enter Amount" /> */}
-          {/* <InputField message="Enter Pin" />/ */}
-          {/* <InputField message="Enter OTP" /> */}
-          {/* <InputField message="Enter Account Number" /> */}
-          {/* <Error message={"Balance insufficient! Try Less Amount"} /> */}
-          {/* <Receipt /> */}
+          {pages.Denominationw?<Denomination amount="2000" page="withdrawal" handlePageChange={handlePageChange} />:''}
+          {pages.Denominationd?<Denomination amount="2000" page="deposit" handlePageChange={handlePageChange} />:''}
+          {pages.InputFieldTTtransfer?<InputField message="Enter Amount" Transactiontype="transfer" handlePageChange={handlePageChange}/>:''}
+          {pages.InputFieldEnterAmount?<InputField message="Enter Amount" handlePageChange={handlePageChange}/>:''}
+          {pages.InputFieldEnterPin?<InputField message="Enter Pin" handlePageChange={handlePageChange}/>:''}
+          {pages.InputFieldEnterOTP?<InputField message="Enter OTP" handlePageChange={handlePageChange}/>:''}
+          {pages.InputFieldEnterAccNo?<InputField message="Enter Account Number" handlePageChange={handlePageChange}/>:''}
+          {pages.Error?<Error message={"Invalid Card Number"} handlePageChange={handlePageChange}/>:''}
+          {/* {pages.Receipt?<Receipt />:''} */}
+          {pages.ReceiptInq?<Receipt
+            cardHolderName="Aayushi Amonkar"
+            Date="03/08/2023 11:00"
+            CardNo="XXXX XXXX XXXX 5678"
+            type="inquiry"
+            amount={100.0}
+            status="passed"
+            balance={5000.0}
+            handlePageChange={handlePageChange}
+          />:''}
+
+          {pages.ReceiptFndT?<Receipt
+            cardHolderName="Aayushi Amonkar"
+            Date="03/08/2023 11:00"
+            transactionID="1234"
+            CardNo="XXXX XXXX XXXX 5678"
+            type="Fund Transfer"
+            ReceiverAccountHolder="Rasik Raikar"
+            amount={100.0}
+            status="passed"
+            balance={5000.0}
+            handlePageChange={handlePageChange}
+          />:''}
+
+          {pages.ReceiptDep?<Receipt
+            cardHolderName="Aayushi Amonkar"
+            Date="03/08/2023 11:00"
+            transactionID="1234"
+            CardNo="XXXX XXXX XXXX 5678"
+            type="Deposit"
+            amount={100.0}
+            status="passed"
+            balance={5000.0}
+            handlePageChange={handlePageChange}
+          />:''}
+
+          {pages.ReceiptW?<Receipt
+            cardHolderName="Aayushi Amonkar"
+            Date="03/08/2023 11:00"
+            transactionID="1234"
+            CardNo="XXXX XXXX XXXX 5678"
+            type="Withdrawal"
+            amount={100.0}
+            status="passed"
+            balance={5000.0}
+            handlePageChange={handlePageChange}
+          />:''}
         </div>
 
         <div id="keypad">
