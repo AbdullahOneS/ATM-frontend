@@ -4,7 +4,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import '../styles.css'
 
 
-const DetailField = () => {
+const DetailField = ({message}) => {
     const [amount,setAmount]=useState('')
     const amountRegex=/^\d[^0-9]?$/;
 
@@ -56,6 +56,13 @@ const DetailField = () => {
         if (!/^\d$/.test(key) && key !== 'Backspace' && key !== 'Delete') {
           event.preventDefault();
         }
+
+        if(message==='Enter Account Number'){
+          if (amount.length >= 11 && key !== 'Backspace' && key !== 'Delete') {
+            event.preventDefault();
+          }
+        }
+
       };
 
   return (
@@ -67,11 +74,11 @@ const DetailField = () => {
         rules={[
           {
             required: true,
-            message: 'Please Enter Amount!',
+            message: `Please ${message}!`,
           },
         ]}
       >
-        <Input type='text' placeholder="Enter Amount" onKeyPress={handleKeyPress} value={amount} onChange={handleInput} className="amount-input"/>
+        <Input type='text' placeholder={message} onKeyPress={handleKeyPress} value={amount} onChange={handleInput} className="amount-input"/>
       </Form.Item>
       <div/>
     </>
