@@ -3,20 +3,44 @@ import Card from "../Components/Card";
 import Accounttype from "../Components/Accounttype";
 import TransactionType from "../Components/TransactionType";
 import { Button } from "antd";
-const Options = ({ Type ,handlePageChange,cardNo,cardHolder}) => {
+const Options = ({ Type, handlePageChange, accType, cardNo, cardHolder }) => {
   let type = "";
   if (Type === "Accounttype") {
-    type = <div>
-      <Button className='OptionButton' onClick={()=>{handlePageChange("OptionsTT")}}>
-            Savings
+    type = (
+      <div>
+        <Button
+          className="OptionButton"
+          onClick={() => {
+            if (accType === "savings") {
+              console.log("I m savings");
+              handlePageChange("OptionsTT", {
+                cardNumber: cardNo,
+                cardHolder: cardHolder,
+              });
+            } else {
+              handlePageChange("Error");
+            }
+          }}
+        >
+          Savings
         </Button>
-        <Button className='OptionButton' onClick={()=>{handlePageChange("OptionsTT")}}>
-            Current
+        <Button
+          className="OptionButton"
+          onClick={() => {
+            if (accType === "current") {
+              console.log("I m current");
+              handlePageChange("OptionsTT");
+            }
+          }}
+        >
+          Current
         </Button>
-    </div>;
+      </div>
+    );
   } else {
-    type = <TransactionType handlePageChange={handlePageChange}/>;
+    type = <TransactionType handlePageChange={handlePageChange} />;
   }
+  console.log("Options AT");
   return (
     <>
       <div

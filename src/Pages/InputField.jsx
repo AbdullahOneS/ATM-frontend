@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import DetailField from "../Components/DetailField";
 import PasswordField from "../Components/PasswordField";
 import { Button } from "antd";
+import Api from "../Api";
 
-const InputField = ({ message, Transactiontype,handlePageChange,setWithdrawalAmt }) => {
+const InputField = ({
+  message,
+  Transactiontype,
+  handlePageChange,
+  setWithdrawalAmt,
+  withdrawalAmt,
+  denominations,
+  cardNo,
+}) => {
+  const [inputValue, setInputValue] = useState("");
   let page = "";
   let input = "";
   let buttonText = "";
@@ -29,20 +39,22 @@ const InputField = ({ message, Transactiontype,handlePageChange,setWithdrawalAmt
     );
   }
   if (message === "Enter Amount") {
-    input = <DetailField message={message} setWithdrawalAmt={setWithdrawalAmt}/>;
+    input = (
+      <DetailField message={message} setWithdrawalAmt={setWithdrawalAmt} />
+    );
     page = "Denominationw";
     buttonText = "Proceed";
   } else if (message === "Enter Pin") {
-    input = <PasswordField message="pin"/>;
+    input = <PasswordField message="pin" setInputValue={setInputValue} />;
     page = "ReceiptW";
     buttonText = "Proceed";
   } else if (message === "Enter Account Number") {
-    input = <DetailField message={message}/>;
-    page = "InputFieldEnterAmount"
+    input = <DetailField message={message} />;
+    page = "InputFieldEnterAmount";
     buttonText = "Proceed";
   } else {
-    input = <PasswordField message="otp"/>;
-    page = "ReceiptW"
+    input = <PasswordField message="otp" />;
+    page = "ReceiptW";
     buttonText = "Verify";
     resendotpLink = (
       <div
@@ -62,6 +74,30 @@ const InputField = ({ message, Transactiontype,handlePageChange,setWithdrawalAmt
       </div>
     );
   }
+
+  const processWithdrawal = async () => {
+    console.log({
+      withdrawal_amt: withdrawalAmt,
+      denominations: denominations,
+      card_no: cardNo,
+      pin: inputValue,
+      atm_id: 1,
+    });
+    try {
+      var result = await Api.post("withdrawal", {
+        withdrawal_amt: withdrawalAmt,
+        denominations: denominations,
+        card_no: cardNo,
+        pin: inputValue,
+        atm_id: 1,
+      });
+
+      console.log(result.data);
+      handlePageChange(page);
+    } catch (error) {
+      console.error();
+    }
+  };
 
   return (
     <>
@@ -126,7 +162,14 @@ const InputField = ({ message, Transactiontype,handlePageChange,setWithdrawalAmt
                   color: "white",
                   borderRadius: "5px",
                 }}
-                onClick={()=>handlePageChange(page)}
+                onClick={() => {
+                  if (message === "Enter Pin") {
+                    processWithdrawal();
+                  }
+                  if (message === "Enter Amount") {
+                    handlePageChange(page);
+                  }
+                }}
               >
                 {buttonText}
               </Button>

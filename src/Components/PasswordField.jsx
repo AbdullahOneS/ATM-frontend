@@ -3,14 +3,14 @@ import { Form, Input } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import "../styles.css";
 
-const PasswordField = ({ message }) => {
+const PasswordField = ({ message, setInputValue }) => {
   let limit;
   if (message === "pin") {
     limit = 4;
   } else {
     limit = 6;
   }
-  const [inputValue, setInputValue] = useState("");
+  const [Value, setValue] = useState("");
   const handleInput = (event) => {
     const { value } = event.target;
 
@@ -19,26 +19,28 @@ const PasswordField = ({ message }) => {
 
     // Restrict the input to only four characters
     if (numericValue.length <= limit) {
+      setValue(numericValue);
       setInputValue(numericValue);
     }
   };
 
-  const handleKeyPress = (event) => {
-    const { key } = event;
+  // const handleKeyPress = (event) => {
+  //   const { key } = event;
 
-    // Allow only valid number keys and special keys
-    if (!/^\d$/.test(key) && key !== "Backspace" && key !== "Delete") {
-      event.preventDefault();
-    }
-    // Prevent input after four characters
-    if (inputValue.length >= limit && key !== "Backspace" && key !== "Delete") {
-      event.preventDefault();
-    }
-  };
+  //   // Allow only valid number keys and special keys
+  //   if (!/^\d$/.test(key) && key !== "Backspace" && key !== "Delete") {
+  //     event.preventDefault();
+  //   }
+  //   // Prevent input after four characters
+  //   if (Value.length >= limit && key !== "Backspace" && key !== "Delete") {
+  //     event.preventDefault();
+  //   }
+  // };
   return (
     <>
       <div className="amount-input-container"></div>
       {/* {amount} */}
+      {/* {Value} */}
       <Form.Item
         name="Enter Pin"
         rules={[
@@ -51,11 +53,11 @@ const PasswordField = ({ message }) => {
         <Input
           type="password"
           placeholder="Enter Pin"
-          onKeyPress={handleKeyPress}
-          value={inputValue}
+          // onKeyPress={handleKeyPress}
+          value={Value}
           onChange={handleInput}
           className="amount-input"
-          suffix={onclick=()=>{}}
+          suffix={(onclick = () => {})}
         />
       </Form.Item>
       <div />
