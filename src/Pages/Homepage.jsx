@@ -46,14 +46,14 @@ const Homepage = () => {
   // console.log(denominations);
 
   const [pages, setPages] = useState({
-    Welcome: false,
+    Welcome: true,
     InsertCard: false,
     OptionsAT: false,
     OptionsTT: false,
     Denominationw: false,
     Denominationd: false,
     InputFieldTTtransfer: false,
-    InputFieldEnterAmount: true,
+    InputFieldEnterAmount: false,
     InputFieldEnterPin: false,
     InputFieldEnterOTP: false,
     InputFieldEnterAccNo: false,
@@ -116,8 +116,9 @@ const Homepage = () => {
       });
       if (result.data.status == 200) {
         console.log("here");
+        setCardNo(result.data.data.card_no);
         setData({
-          cardNo: result.data.data.card_no,
+          cardNo: "XXXX XXXX XXXX " + cardNo.slice(12, 16),
           balance: result.data.data.balance,
           cardHolder: result.data.data.name,
           status: "passed",
