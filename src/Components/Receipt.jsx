@@ -31,6 +31,7 @@ export default class Export extends Component {
       status,
       balance,
       handlePageChange,
+      handleData,
     } = this.props;
     return (
       <div
@@ -65,30 +66,34 @@ export default class Export extends Component {
               }}
             >
               <ReceiptTemplate
-cardHolderName={cardHolderName}
-Date={Date}
-transactionID={transactionID}
-CardNo={CardNo}
-type={type}
-amount={amount}
-status={status}
-balance={balance}
-ReceiverAccountHolder={ReceiverAccountHolder}
-/>
+                cardHolderName={cardHolderName}
+                Date={Date}
+                transactionID={transactionID}
+                CardNo={CardNo}
+                type={type}
+                amount={amount}
+                status={status}
+                balance={balance}
+                ReceiverAccountHolder={ReceiverAccountHolder}
+              />
             </div>
           </div>
           <div style={{ padding: "10%" }}>
             <Button
               className="OptionButton"
               style={{ outline: "none", border: "none" }}
-              onClick={this.printDocument}
+              onClick={
+                this.printDocument
+                // handleData();
+                // handlePageChange("Welcome");
+              }
             >
               Print
             </Button>
             <Button
               className="OptionButton"
               style={{ outline: "none", border: "none", marginTop: "10%" }}
-              onClick={()=>handlePageChange("Welcome")}
+              onClick={() => handlePageChange("Welcome")}
             >
               Continue
             </Button>

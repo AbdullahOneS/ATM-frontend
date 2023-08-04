@@ -67,7 +67,11 @@ const Homepage = () => {
   const [screenOutput, setScreenOutput] = useState("");
   const [data, setData] = useState({});
 
-  console.log(data);
+  // console.log(data);
+
+  // const handleData = () => {
+  //   setData({});
+  // };
 
   const handlePageChange = (pageKey, message) => {
     // setData(cardDetails);
@@ -115,7 +119,7 @@ const Homepage = () => {
         pin: screenOutput,
       });
       if (result.data.status == 200) {
-        console.log("here");
+        // console.log("here");
         setCardNo(result.data.data.card_no);
         setData({
           cardNo: "XXXX XXXX XXXX " + cardNo.slice(12, 16),
@@ -132,6 +136,34 @@ const Homepage = () => {
       // console.log(result.data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const Withdrawal = async () => {
+    console.log(withdrawalAmt, denominations, cardNo, screenOutput);
+    // console.log({
+    //   withdrawal_amt: withdrawalAmt,
+    //   denominations: denominations,
+    //   card_no: cardNo,
+    //   pin: screenOutput,
+    //   atm_id: 1,
+    // });
+
+    console.log("hii im in withdrawal");
+    try {
+      var result = await Api.post("withdrawal", {
+        withdrawal_amt: withdrawalAmt,
+        denominations: denominations,
+        card_no: cardNo,
+        pin: screenOutput,
+        atm_id: 1,
+      });
+
+      console.log(result.data);
+      console.log("doneeeeeeeeeeeeeeeeeeeeeeeeeee");
+      handlePageChange("ReceiptW");
+    } catch (error) {
+      console.error();
     }
   };
 
@@ -179,6 +211,10 @@ const Homepage = () => {
       } else if (currentPage === "InsertCard") {
         if (screenOutput.length === 16) {
           cardVerify();
+        }
+      } else if (currentPage === "InputFieldEnterPin") {    //// yet to sort
+        if (screenOutput.length === 4) {
+          Withdrawal();
         }
       } else if (currentPage === "InputFieldEnterPin") {
         if (screenOutput.length === 4) {
@@ -277,12 +313,9 @@ const Homepage = () => {
             <InputField
               message="Enter Pin"
               handlePageChange={handlePageChange}
-              withdrawalAmt={withdrawalAmt}
-              denominations={denominations}
-              cardNo={cardNo}
-              type={"inquiry"}
               pin={screenOutput}
               balanceCheck={balanceCheck}
+              Withdrawal={Withdrawal}
             />
           ) : (
             ""
@@ -319,6 +352,7 @@ const Homepage = () => {
               status={data.status}
               balance={data.balance}
               handlePageChange={handlePageChange}
+              // handleData={handleData}
             />
           ) : (
             ""

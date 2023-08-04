@@ -15,6 +15,7 @@ const InputField = ({
   type,
   pin,
   balanceCheck,
+  Withdrawal,
 }) => {
   const [inputValue, setInputValue] = useState("");
   let page = "";
@@ -79,30 +80,6 @@ const InputField = ({
       </div>
     );
   }
-
-  const processWithdrawal = async () => {
-    console.log({
-      withdrawal_amt: withdrawalAmt,
-      denominations: denominations,
-      card_no: cardNo,
-      pin: inputValue,
-      atm_id: 1,
-    });
-    try {
-      var result = await Api.post("withdrawal", {
-        withdrawal_amt: withdrawalAmt,
-        denominations: denominations,
-        card_no: cardNo,
-        pin: inputValue,
-        atm_id: 1,
-      });
-
-      console.log(result.data);
-      handlePageChange(page);
-    } catch (error) {
-      console.error();
-    }
-  };
 
   return (
     <>
@@ -171,7 +148,7 @@ const InputField = ({
                   if (message === "Enter Pin" && type === "inquiry") {
                     balanceCheck();
                   } else if (message === "Enter Pin") {
-                    processWithdrawal();
+                    Withdrawal();
                   }
                   if (message === "Enter Amount") {
                     handlePageChange(page);
