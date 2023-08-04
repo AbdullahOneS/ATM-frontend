@@ -12,6 +12,9 @@ const InputField = ({
   withdrawalAmt,
   denominations,
   cardNo,
+  type,
+  pin,
+  balanceCheck,
 }) => {
   const [inputValue, setInputValue] = useState("");
   let page = "";
@@ -45,7 +48,9 @@ const InputField = ({
     page = "Denominationw";
     buttonText = "Proceed";
   } else if (message === "Enter Pin") {
-    input = <PasswordField message="pin" setInputValue={setInputValue} />;
+    input = (
+      <PasswordField message="pin" setInputValue={setInputValue} pin={pin} />
+    );
     page = "ReceiptW";
     buttonText = "Proceed";
   } else if (message === "Enter Account Number") {
@@ -163,7 +168,9 @@ const InputField = ({
                   borderRadius: "5px",
                 }}
                 onClick={() => {
-                  if (message === "Enter Pin") {
+                  if (message === "Enter Pin" && type === "inquiry") {
+                    balanceCheck();
+                  } else if (message === "Enter Pin") {
                     processWithdrawal();
                   }
                   if (message === "Enter Amount") {
@@ -173,7 +180,7 @@ const InputField = ({
               >
                 {buttonText}
               </Button>
-              <Button
+              {/* <Button
                 style={{
                   backgroundColor: "#0E77BD",
                   width: "100px",
@@ -184,9 +191,10 @@ const InputField = ({
                   color: "white",
                   borderRadius: "5px",
                 }}
+                onClick={()=>}
               >
                 clear
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

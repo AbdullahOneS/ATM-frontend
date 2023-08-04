@@ -14,6 +14,7 @@ const InsertCard = ({
   // setCardHolder,
   // cardHolder,
   cardNumber,
+  cardVerify,
 }) => {
   let limit;
   // let cardHolder = "";
@@ -32,35 +33,35 @@ const InsertCard = ({
 
   //to call verify API
 
-  const cardVerify = async () => {
-    try {
-      var result = await Api.post("card/verify", {
-        card_no: cardNumber,
-      });
-      if (result.data.status == 200) {
-        // console.log("helloo ++> ");
-        // setCardNo(cardNo);
-        // setCardHolder(result.data.data);
-        // setcardDetails({
-        //   cardNumber: { cardNumber },
-        //   cardHolder: result.data.data.name,
-        //   cardAccountType: result.data.data.type,
-        // });
+  // const cardVerify = async () => {
+  //   try {
+  //     var result = await Api.post("card/verify", {
+  //       card_no: cardNumber,
+  //     });
+  //     if (result.data.status == 200) {
+  //       // console.log("helloo ++> ");
+  //       // setCardNo(cardNo);
+  //       // setCardHolder(result.data.data);
+  //       // setcardDetails({
+  //       //   cardNumber: { cardNumber },
+  //       //   cardHolder: result.data.data.name,
+  //       //   cardAccountType: result.data.data.type,
+  //       // });
 
-        handlePageChange("OptionsAT", {
-          cardNumber: cardNumber,
-          cardHolder: result.data.data.name,
-          cardAccountType: result.data.data.type,
-        });
-      } else {
-        handlePageChange("Error");
-      }
+  //       handlePageChange("OptionsAT", {
+  //         cardNumber: cardNumber,
+  //         cardHolder: result.data.data.name,
+  //         cardAccountType: result.data.data.type,
+  //       });
+  //     } else {
+  //       handlePageChange("Error");
+  //     }
 
-      // console.log(result.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     // console.log(result.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   // cardVerify()
 
@@ -117,6 +118,9 @@ const InsertCard = ({
             alignItems: "center",
           }}
         >
+          <h1 style={{ color: "white", marginBottom: "2%" }}>
+            Enter Card Number
+          </h1>
           {/* {cardNo} */}
           <div className="card">
             <Card cardNo={cardNumber} cardHolder={cardDetails.cardHolder} />
@@ -128,6 +132,9 @@ const InsertCard = ({
               backgroundColor: "whitesmoke",
               padding: "2%",
               marginTop: "3%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <Form form={form} name="horizontal_login" onFinish={onFinish}>
@@ -171,14 +178,12 @@ const InsertCard = ({
                     htmlType="submit"
                     disabled={
                       !form.isFieldsTouched(true) ||
-                      form.value < 16 ||
+                      cardNumber.length < 16 ||
                       !!form
                         .getFieldsError()
                         .filter(({ errors }) => errors.length).length
                     }
-                    onClick={() => {
-                      cardVerify();
-                    }}
+                    onClick={cardVerify}
                   >
                     Proceed
                   </Button>

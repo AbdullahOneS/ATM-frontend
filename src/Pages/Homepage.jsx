@@ -9,7 +9,24 @@ import InputField from "./InputField";
 import Error from "../Components/Error";
 import Receipt from "../Components/Receipt";
 import Keyboard from "../Components/Keyboard";
+import Api from "../Api";
 const Homepage = () => {
+  const getCurrentDate = () => {
+    const now = new Date();
+
+    // Get day, month, year, hours, and minutes
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Month is zero-based
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+
+    // Combine the parts to form the desired format
+    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+
+    return formattedDate;
+  };
+
   //current
   const [currentPage, setCurrentPage] = useState("");
   //withdrawal data
@@ -21,9 +38,7 @@ const Homepage = () => {
     n_2000: 0,
   });
   const [cardNo, setCardNo] = useState("");
-  const [message, setMessage] = useState("");
-  // ----
-
+  const [errormsg, setErrorMsg] = useState("");
   const [cardHolder, setCardHolder] = useState("");
 
   const [accType, setacctype] = useState("");
@@ -31,14 +46,14 @@ const Homepage = () => {
   // console.log(denominations);
 
   const [pages, setPages] = useState({
-    Welcome: true,
+    Welcome: false,
     InsertCard: false,
     OptionsAT: false,
     OptionsTT: false,
     Denominationw: false,
     Denominationd: false,
     InputFieldTTtransfer: false,
-    InputFieldEnterAmount: false,
+    InputFieldEnterAmount: true,
     InputFieldEnterPin: false,
     InputFieldEnterOTP: false,
     InputFieldEnterAccNo: false,
@@ -51,6 +66,74 @@ const Homepage = () => {
 
   const [screenOutput, setScreenOutput] = useState("");
   const [data, setData] = useState({});
+
+  console.log(data);
+
+  const handlePageChange = (pageKey, message) => {
+    // setData(cardDetails);
+    setScreenOutput("");
+    setErrorMsg(message);
+    setCurrentPage(pageKey);
+    setPages((prevPages) => {
+      const updatedPages = { ...prevPages };
+      for (const key in updatedPages) {
+        updatedPages[key] = key === pageKey;
+      }
+      return updatedPages;
+    });
+  };
+
+  const cardVerify = async () => {
+    try {
+      var result = await Api.post("card/verify", {
+        card_no: screenOutput,
+      });
+      if (result.data.status == 200) {
+        handlePageChange("OptionsAT");
+        setData({
+          cardNumber: screenOutput,
+          cardHolder: result.data.data.name,
+          cardAccountType: result.data.data.type,
+        });
+        setCardNo(screenOutput);
+        setCardHolder(result.data.data.name);
+      } else {
+        handlePageChange("Error", result.data.message);
+      }
+
+      // console.log(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const balanceCheck = async () => {
+    // console.log("i m balance check");
+    try {
+      var result = await Api.post("balance/check", {
+        card_no: cardNo,
+        pin: screenOutput,
+      });
+      if (result.data.status == 200) {
+        console.log("here");
+        setData({
+          cardNo: result.data.data.card_no,
+          balance: result.data.data.balance,
+          cardHolder: result.data.data.name,
+          status: "passed",
+          date: getCurrentDate(),
+        });
+        handlePageChange("ReceiptInq");
+      } else {
+        handlePageChange("Error", result.data.message);
+      }
+
+      // console.log(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleKeyClick = (key) => {
     // Handle the key press and update the screen output based on the key and input type
 
@@ -71,6 +154,11 @@ const Homepage = () => {
         if (screenOutput.length < 16) {
           setScreenOutput((prev) => prev + key);
         }
+      } else if (currentPage === "InputFieldEnterPin") {
+        console.log("hii");
+        if (screenOutput.length < 4) {
+          setScreenOutput((prev) => prev + key);
+        }
       }
     } else if (key === "CLEAR") {
       setScreenOutput("");
@@ -89,63 +177,14 @@ const Homepage = () => {
         handlePageChange("InsertCard");
       } else if (currentPage === "InsertCard") {
         if (screenOutput.length === 16) {
-          handlePageChange("OptionsAT");
+          cardVerify();
+        }
+      } else if (currentPage === "InputFieldEnterPin") {
+        if (screenOutput.length === 4) {
+          balanceCheck();
         }
       }
     }
-  };
-
-  console.log(data);
-  // const acccountType = (acct)=>{
-  //   setacctype(acct);
-  // }
-
-  // console.log(accType);
-
-  // const handleWelcome = (currentPage)=>{
-  //   setPages((pre)=>({
-  //     ...pre,
-  //     Welcome:true,
-  //     currentPage:false
-  //   }))
-  // }
-  // const handleInsertCard = (currentPage)=>{
-  //   setPages((pre)=>({
-  //     ...pre,
-  //     Welcome:false,
-  //     InsertCard:true,
-  //     OptionsAT:false,
-  //     OptionsTT:false,
-  //     DenominationW:false,
-  //     DenominationD:false,
-  //     InputFieldTTtransfer:false,
-  //     InputFieldEnterAmount:false,
-  //     InputFieldEnterPin:false,
-  //     InputFieldEnterOTP:false,
-  //     InputFieldEnterAccNo:false,
-  //     Error:false,
-  //     Receipt:false
-  //   }))
-  // }
-  // const handleOptionsAccountType = (currentPage)=>{
-  //   setPages((pre)=>({
-  //     ...pre,
-  //     OptionsAT:true,
-  //     currentPage:false
-  //   }))
-  // }
-
-  const handlePageChange = (pageKey, cardDetails) => {
-    setData(cardDetails);
-    setScreenOutput("");
-    setCurrentPage(pageKey);
-    setPages((prevPages) => {
-      const updatedPages = { ...prevPages };
-      for (const key in updatedPages) {
-        updatedPages[key] = key === pageKey;
-      }
-      return updatedPages;
-    });
   };
 
   return (
@@ -157,6 +196,8 @@ const Homepage = () => {
           ) : (
             currentComponent
           )} */}
+          {/* {currentPage}
+          {screenOutput} */}
           {pages.Welcome ? <Welcome handlePageChange={handlePageChange} /> : ""}
           {pages.InsertCard ? (
             <InsertCard
@@ -166,6 +207,7 @@ const Homepage = () => {
               // setCardHolder={setCardHolder}
               // cardHolder={cardHolder}
               cardNumber={screenOutput}
+              cardVerify={cardVerify}
             />
           ) : (
             ""
@@ -185,8 +227,8 @@ const Homepage = () => {
             <Options
               Type="Transactiontype"
               handlePageChange={handlePageChange}
-              cardNo={data.cardNumber}
-              cardHolder={data.cardHolder}
+              cardNo={cardNo}
+              cardHolder={cardHolder}
             />
           ) : (
             ""
@@ -237,6 +279,9 @@ const Homepage = () => {
               withdrawalAmt={withdrawalAmt}
               denominations={denominations}
               cardNo={cardNo}
+              type={"inquiry"}
+              pin={screenOutput}
+              balanceCheck={balanceCheck}
             />
           ) : (
             ""
@@ -258,23 +303,20 @@ const Homepage = () => {
             ""
           )}
           {pages.Error ? (
-            <Error
-              message={"Invalid Card Number"}
-              handlePageChange={handlePageChange}
-            />
+            <Error message={errormsg} handlePageChange={handlePageChange} />
           ) : (
             ""
           )}
           {/* {pages.Receipt?<Receipt />:''} */}
           {pages.ReceiptInq ? (
             <Receipt
-              cardHolderName="Aayushi Amonkar"
-              Date="03/08/2023 11:00"
-              CardNo="XXXX XXXX XXXX 5678"
+              cardHolderName={data.cardHolder}
+              Date={data.date}
+              CardNo={data.cardNo}
               type="inquiry"
-              amount={100.0}
-              status="passed"
-              balance={5000.0}
+              amount={""}
+              status={data.status}
+              balance={data.balance}
               handlePageChange={handlePageChange}
             />
           ) : (

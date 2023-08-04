@@ -12,13 +12,13 @@ const Options = ({ Type, handlePageChange, accType, cardNo, cardHolder }) => {
           className="OptionButton"
           onClick={() => {
             if (accType === "savings") {
-              console.log("I m savings");
+              // console.log("I m savings");
               handlePageChange("OptionsTT", {
                 cardNumber: cardNo,
                 cardHolder: cardHolder,
               });
             } else {
-              handlePageChange("Error");
+              handlePageChange("Error", "Invalid Account type!");
             }
           }}
         >
@@ -28,8 +28,10 @@ const Options = ({ Type, handlePageChange, accType, cardNo, cardHolder }) => {
           className="OptionButton"
           onClick={() => {
             if (accType === "current") {
-              console.log("I m current");
+              // console.log("I m current");
               handlePageChange("OptionsTT");
+            } else {
+              handlePageChange("Error", "Invalid Account type!");
             }
           }}
         >
