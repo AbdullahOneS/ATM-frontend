@@ -1,8 +1,9 @@
 import React from "react";
 import DetailField from "../Components/DetailField";
 import PasswordField from "../Components/PasswordField";
+import { Button } from "antd";
 
-const InputField = ({ message, Transactiontype,handlePageChange }) => {
+const InputField = ({ message, Transactiontype,handlePageChange,setWithdrawalAmt }) => {
   let page = "";
   let input = "";
   let buttonText = "";
@@ -28,8 +29,8 @@ const InputField = ({ message, Transactiontype,handlePageChange }) => {
     );
   }
   if (message === "Enter Amount") {
-    input = <DetailField message={message} />;
-    page = "InputFieldEnterPin";
+    input = <DetailField message={message} setWithdrawalAmt={setWithdrawalAmt}/>;
+    page = "Denominationw";
     buttonText = "Proceed";
   } else if (message === "Enter Pin") {
     input = <PasswordField message="pin"/>;
@@ -114,7 +115,7 @@ const InputField = ({ message, Transactiontype,handlePageChange }) => {
                 margin: "6% 0%",
               }}
             >
-              <div
+              <Button
                 style={{
                   backgroundColor: "#0E77BD",
                   width: "100px",
@@ -128,8 +129,8 @@ const InputField = ({ message, Transactiontype,handlePageChange }) => {
                 onClick={()=>handlePageChange(page)}
               >
                 {buttonText}
-              </div>
-              <div
+              </Button>
+              <Button
                 style={{
                   backgroundColor: "#0E77BD",
                   width: "100px",
@@ -142,7 +143,7 @@ const InputField = ({ message, Transactiontype,handlePageChange }) => {
                 }}
               >
                 clear
-              </div>
+              </Button>
             </div>
           </div>
         </div>

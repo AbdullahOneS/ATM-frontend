@@ -2,16 +2,17 @@ import React from "react";
 import Card from "../Components/Card";
 import Accounttype from "../Components/Accounttype";
 import TransactionType from "../Components/TransactionType";
-const Options = ({ Type ,handlePageChange}) => {
+import { Button } from "antd";
+const Options = ({ Type ,handlePageChange,cardNo,cardHolder}) => {
   let type = "";
   if (Type === "Accounttype") {
     type = <div>
-      <div className='OptionButton' onClick={()=>handlePageChange("OptionsTT")}>
+      <Button className='OptionButton' onClick={()=>{handlePageChange("OptionsTT")}}>
             Savings
-        </div>
-        <div className='OptionButton' onClick={()=>handlePageChange("OptionsTT")}>
+        </Button>
+        <Button className='OptionButton' onClick={()=>{handlePageChange("OptionsTT")}}>
             Current
-        </div>
+        </Button>
     </div>;
   } else {
     type = <TransactionType handlePageChange={handlePageChange}/>;
@@ -39,7 +40,7 @@ const Options = ({ Type ,handlePageChange}) => {
           }}
         >
           <div className="card" style={{ width: "25vw" }}>
-            <Card cardNo={"1233123413445135"} cardHolder={"Aayushi Amonkar"} />
+            <Card cardNo={cardNo} cardHolder={cardHolder} />
           </div>
         </div>
         <div style={{ width: "50%", margin: "auto" }}>{type}</div>

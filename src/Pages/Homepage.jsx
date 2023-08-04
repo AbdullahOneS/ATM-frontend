@@ -11,6 +11,22 @@ import Receipt from "../Components/Receipt";
 
 const Homepage = () => {
 
+  //withdrawal data
+  const [withdrawalAmt, setWithdrawalAmt] = useState(0);
+  const [denominations, setDenominations] = useState({
+    n_100: 0,
+    n_200: 0,
+    n_500: 0,
+    n_2000: 0,
+  });
+  const [cardNo, setCardNo] = useState('');
+  const [message, setMessage] = useState('');
+// ----
+
+const [cardHolder , setCardHolder] = useState("");
+
+  const [accType , setacctype ] = useState("");
+
   const [pages, setPages] = useState({
     Welcome:true,
     InsertCard:false,
@@ -31,6 +47,11 @@ const Homepage = () => {
 
   })
 
+  // const acccountType = (acct)=>{
+  //   setacctype(acct);
+  // }
+
+  // console.log(accType);
 
   // const handleWelcome = (currentPage)=>{
   //   setPages((pre)=>({
@@ -86,14 +107,14 @@ const Homepage = () => {
             currentComponent
           )} */}
           {pages.Welcome?<Welcome handlePageChange={handlePageChange}/>:''}
-          {pages.InsertCard?<InsertCard title="Card number" handlePageChange={handlePageChange}/>:''}
-          {pages.OptionsAT?<Options Type="Accounttype" handlePageChange={handlePageChange}/>:''}
+          {pages.InsertCard?<InsertCard title="Card number" handlePageChange={handlePageChange} setCardNo={setCardNo} setCardHolder={setCardHolder} cardHolder={cardHolder}/>:''}
+          {pages.OptionsAT?<Options Type="Accounttype" handlePageChange={handlePageChange} setacctype={setacctype} cardNo={cardNo} cardHolder={cardHolder}/>:''}
           {pages.OptionsTT?<Options Type="Transactiontype" handlePageChange={handlePageChange}/>:''}
 
-          {pages.Denominationw?<Denomination amount="2000" page="withdrawal" handlePageChange={handlePageChange} />:''}
+          {pages.Denominationw?<Denomination amount="2000" page="withdrawal" handlePageChange={handlePageChange} setDenominations={setDenominations} withdrawalAmt={withdrawalAmt}/>:''}
           {pages.Denominationd?<Denomination amount="2000" page="deposit" handlePageChange={handlePageChange} />:''}
           {pages.InputFieldTTtransfer?<InputField message="Enter Amount" Transactiontype="transfer" handlePageChange={handlePageChange}/>:''}
-          {pages.InputFieldEnterAmount?<InputField message="Enter Amount" handlePageChange={handlePageChange}/>:''}
+          {pages.InputFieldEnterAmount?<InputField message="Enter Amount" handlePageChange={handlePageChange} setWithdrawalAmt={setWithdrawalAmt}/>:''}
           {pages.InputFieldEnterPin?<InputField message="Enter Pin" handlePageChange={handlePageChange}/>:''}
           {pages.InputFieldEnterOTP?<InputField message="Enter OTP" handlePageChange={handlePageChange}/>:''}
           {pages.InputFieldEnterAccNo?<InputField message="Enter Account Number" handlePageChange={handlePageChange}/>:''}

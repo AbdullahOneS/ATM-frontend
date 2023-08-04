@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import ReceiptTemplate from "./ReceiptTemplate";
+import { Button } from "antd";
 
 export default class Export extends Component {
   constructor(props) {
@@ -77,20 +78,20 @@ ReceiverAccountHolder={ReceiverAccountHolder}
             </div>
           </div>
           <div style={{ padding: "10%" }}>
-            <button
+            <Button
               className="OptionButton"
               style={{ outline: "none", border: "none" }}
               onClick={this.printDocument}
             >
               Print
-            </button>
-            <button
+            </Button>
+            <Button
               className="OptionButton"
               style={{ outline: "none", border: "none", marginTop: "10%" }}
               onClick={()=>handlePageChange("Welcome")}
             >
               Continue
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -3,7 +3,8 @@ import '../styles.css'
 import CardBackground from '../images/Screenshot 2023-08-02 100754.png'
 
 const Card = ({cardNo,cardHolder}) => {
-  const formattedNumber = cardNo.replace(/(\d{4})(?=\d)/g, '$1  ');
+   let cardno=`${cardNo}`
+  const formattedNumber = cardno.replace(/(\d{4})(?=\d)/g, '$1-');
   return (
     <>
         <div className='wrapper' id='app'>

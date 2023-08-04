@@ -1,12 +1,13 @@
+import { Button } from 'antd'
 import React from 'react'
 
 const TransactionType = ({handlePageChange}) => {
   return (
     <>
-        <div className='OptionButton' onClick={()=>handlePageChange("Denominationw")}>Withdrawal</div>
-        <div className='OptionButton'onClick={()=>handlePageChange("Denominationd")}>Deposit</div>
-        <div className='OptionButton'onClick={()=>handlePageChange("InputFieldEnterPin")}>Balance Inquiry</div>
-        <div className='OptionButton'onClick={()=>handlePageChange("InputFieldEnterAccNo")}>Fund Transfer</div>
+        <Button className='OptionButton' onClick={()=>handlePageChange("InputFieldEnterAmount")}>Withdrawal</Button>
+        <Button className='OptionButton'onClick={()=>handlePageChange("Denominationd")}>Deposit</Button>
+        <Button className='OptionButton'onClick={()=>handlePageChange("InputFieldEnterPin")}>Balance Inquiry</Button>
+        <Button className='OptionButton'onClick={()=>handlePageChange("InputFieldEnterAccNo")}>Fund Transfer</Button>
     </>
   )
 }

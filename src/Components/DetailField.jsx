@@ -4,7 +4,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import '../styles.css'
 
 
-const DetailField = ({message}) => {
+const DetailField = ({message,setWithdrawalAmt}) => {
     const [amount,setAmount]=useState('')
     const amountRegex=/^\d[^0-9]?$/;
 
@@ -48,6 +48,8 @@ const DetailField = ({message}) => {
     
         setAmount(numericValue);
       };
+
+      setWithdrawalAmt(amount);
     
       const handleKeyPress = (event) => {
         const { key } = event;

@@ -7,9 +7,9 @@ import Options from "./Options";
 import axios from "axios";
 import Api from "../Api";
 
-const InsertCard = ({ title,handlePageChange }) => {
+const InsertCard = ({ title,handlePageChange,setCardNo,setCardHolder ,cardHolder}) => {
   let limit;
-  let cardHolder = "";
+  // let cardHolder = "";
   // console.log(handleChange)
   if (title === "Card number") {
     limit = 16;
@@ -27,12 +27,16 @@ const InsertCard = ({ title,handlePageChange }) => {
       }
       );
       if(result.data.status == 200){
+        console.log("helloo ++> ");
+        setCardNo(cardNo)
+        setCardHolder(result.data.data)
         handlePageChange("OptionsAT")
       }
       else{
         handlePageChange('Error')
       }
-      console.log(result.data);
+      
+      // console.log(result.data);
       
     } catch (error) {
       console.log(error);
@@ -99,7 +103,7 @@ const InsertCard = ({ title,handlePageChange }) => {
           </div>
           <div
             style={{
-              boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;",
+              boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
               width: "50%",
               backgroundColor: "whitesmoke",
               padding: "2%",
