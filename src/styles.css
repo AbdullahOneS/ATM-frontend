@@ -210,6 +210,15 @@
     align-items: center;
     height: 6vh;
     /* background-color: #0E77BD; */
+    border-radius: 10px;
+    width: 320px;
+    color: black;
+    /* background-color: white; */
+    text-align: center;
+    font-size: 12pt;
+    font-weight: bolder;
+    margin-top: 10%;
+
   }
   
   .amount-input {

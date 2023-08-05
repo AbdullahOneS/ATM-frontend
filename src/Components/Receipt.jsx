@@ -26,12 +26,11 @@ export default class Export extends Component {
       transactionID,
       CardNo,
       type,
-      ReceiverAccountHolder,
       amount,
+      ReceiverAccountHolder,
       status,
       balance,
       handlePageChange,
-      handleData,
     } = this.props;
     return (
       <div

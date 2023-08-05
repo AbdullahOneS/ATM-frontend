@@ -28,6 +28,8 @@ const ReceiptTemplate = ({
           width: "90%",
         }}
       >
+        {/* {type} */}
+        
         <div style={{ display: "flex", alignItems: "center" }}>
           ...............................................................................
         </div>
@@ -92,7 +94,7 @@ const ReceiptTemplate = ({
           {type != "inquiry" ? `${amount}` : ""}
         </div>
 
-        {type === "Fund Transfer" ? (
+        {type === "fund Transfer" ? (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span style={{ textAlign: "left" }}>Transferred to: </span>
 

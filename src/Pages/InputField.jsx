@@ -8,7 +8,7 @@ const InputField = ({
   message,
   Transactiontype,
   handlePageChange,
-  setWithdrawalAmt,
+  // setWithdrawalAmt,
   withdrawalAmt,
   denominations,
   cardNo,
@@ -16,6 +16,9 @@ const InputField = ({
   pin,
   balanceCheck,
   Withdrawal,
+  transactionType,
+  Amount,
+  AmountCheck,
 }) => {
   const [inputValue, setInputValue] = useState("");
   let page = "";
@@ -43,9 +46,7 @@ const InputField = ({
     );
   }
   if (message === "Enter Amount") {
-    input = (
-      <DetailField message={message} setWithdrawalAmt={setWithdrawalAmt} />
-    );
+    input = <DetailField message={message} Amount={Amount} />;
     page = "Denominationw";
     buttonText = "Proceed";
   } else if (message === "Enter Pin") {
@@ -83,6 +84,7 @@ const InputField = ({
 
   return (
     <>
+      {/* {transactionType} */}
       <div
         style={{
           display: "block",
@@ -145,13 +147,21 @@ const InputField = ({
                   borderRadius: "5px",
                 }}
                 onClick={() => {
-                  if (message === "Enter Pin" && type === "inquiry") {
+                  console.log("i m here");
+                  if (
+                    message === "Enter Pin" &&
+                    transactionType === "inquiry"
+                  ) {
                     balanceCheck();
-                  } else if (message === "Enter Pin") {
+                  } else if (
+                    message === "Enter Pin" &&
+                    transactionType === "withdrawal"
+                  ) {
                     Withdrawal();
                   }
                   if (message === "Enter Amount") {
-                    handlePageChange(page);
+                    // handlePageChange(page);
+                    AmountCheck();
                   }
                 }}
               >

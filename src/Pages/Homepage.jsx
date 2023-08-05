@@ -55,25 +55,40 @@ const Homepage = () => {
     InputFieldTTtransfer: false,
     InputFieldEnterAmount: false,
     InputFieldEnterPin: false,
+    InputFieldEnterPin: false,
     InputFieldEnterOTP: false,
     InputFieldEnterAccNo: false,
     Error: false,
-    ReceiptInq: false,
-    ReceiptFndT: false,
-    ReceiptDep: false,
-    ReceiptW: false,
+    Receipt: false,
+    // ReceiptFndT: false,
+    // ReceiptDep: false,
+    // ReceiptW: false,
   });
 
   const [screenOutput, setScreenOutput] = useState("");
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    cardHolder: "",
+    date: "",
+    transactionID: "",
+    cardNo: "",
+    transactiontype: "",
+    ReceiverAccountHolder: "",
+    amount: "",
+    status: "pending",
+    balance: "",
+    cardAccountType: "",
+  });
+  const [atmDenominations, setAtmDenominations] = useState({});
 
-  // console.log(data);
-
-  // const handleData = () => {
-  //   setData({});
-  // };
-
-  const handlePageChange = (pageKey, message) => {
+  const handlePageChange = (pageKey, message, type) => {
+    // if (message == "success") {
+    if (type) {
+      setData((prev) => ({
+        ...prev,
+        transactiontype: type,
+      }));
+    }
+    // }
     // setData(cardDetails);
     setScreenOutput("");
     setErrorMsg(message);
@@ -85,6 +100,7 @@ const Homepage = () => {
       }
       return updatedPages;
     });
+    // console.log(data);
   };
 
   const cardVerify = async () => {
@@ -95,8 +111,15 @@ const Homepage = () => {
       if (result.data.status == 200) {
         handlePageChange("OptionsAT");
         setData({
-          cardNumber: screenOutput,
           cardHolder: result.data.data.name,
+          date: "",
+          transactionID: "",
+          cardNo: screenOutput,
+          transactiontype: "",
+          ReceiverAccountHolder: "",
+          amount: "",
+          status: "pending",
+          balance: "",
           cardAccountType: result.data.data.type,
         });
         setCardNo(screenOutput);
@@ -120,15 +143,17 @@ const Homepage = () => {
       });
       if (result.data.status == 200) {
         // console.log("here");
+        // setType("inquiry");
         setCardNo(result.data.data.card_no);
-        setData({
+        setData((prev) => ({
+          ...prev,
           cardNo: "XXXX XXXX XXXX " + cardNo.slice(12, 16),
           balance: result.data.data.balance,
           cardHolder: result.data.data.name,
           status: "passed",
           date: getCurrentDate(),
-        });
-        handlePageChange("ReceiptInq");
+        }));
+        handlePageChange("Receipt");
       } else {
         handlePageChange("Error", result.data.message);
       }
@@ -139,8 +164,61 @@ const Homepage = () => {
     }
   };
 
+  const AmountCheck = async () => {
+    console.log("i m amt check");
+    try {
+      var result = await Api.post("withdrawal/denomination", {
+        atm_id: 1,
+      });
+      if (result.data.status === 200) {
+        setAtmDenominations(result.data.data);
+        // console.log(result.data.data);
+        //find which is lowest denomination in atm
+        // console.log(atmDenominations);
+        let min_note = 100;
+        if (atmDenominations.n_100 > 0) {
+          min_note = 100;
+        } else if (atmDenominations.n_200 > 0) {
+          min_note = 200;
+        } else if (atmDenominations.n_500 > 0) {
+          min_note = 500;
+        } else if (atmDenominations.n_2000 > 0) {
+          min_note = 2000;
+        } else {
+          // handlePageChange("Error", "No Cash to Dispence");
+        }
+        let totalAtmAmt =
+          atmDenominations.n_100 * 100 +
+          atmDenominations.n_200 * 200 +
+          atmDenominations.n_500 * 500 +
+          atmDenominations.n_2000 * 2000;
+        // console.log(atmDenominations);
+        if (totalAtmAmt > screenOutput && screenOutput % min_note === 0) {
+          setData((prev) => ({
+            ...prev,
+            amount: screenOutput,
+          }));
+          console.log(min_note);
+
+          handlePageChange("Denominationw");
+        } else {
+          handlePageChange("Error", "No Cash to Dispence");
+        }
+      } else {
+        handlePageChange("Error", result.message);
+      }
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  // const setWithdrawDenominations = (denomination) => {
+  //   // console.log(data);
+  //   // setDenominations(denomination);
+  //   // handlePageChange("InputFieldEnterPin");
+  // };
   const Withdrawal = async () => {
-    console.log(withdrawalAmt, denominations, cardNo, screenOutput);
+    // console.log(withdrawalAmt, denominations, cardNo, screenOutput);
     // console.log({
     //   withdrawal_amt: withdrawalAmt,
     //   denominations: denominations,
@@ -150,18 +228,41 @@ const Homepage = () => {
     // });
 
     console.log("hii im in withdrawal");
+    // console.log(data);
+    // console.log(denominations);
+    // console.log(screenOutput);
     try {
       var result = await Api.post("withdrawal", {
-        withdrawal_amt: withdrawalAmt,
-        denominations: denominations,
-        card_no: cardNo,
-        pin: screenOutput,
         atm_id: 1,
+        amount: data.amount,
+        denominations: denominations,
+        card_no: data.cardNo,
+        pin: screenOutput,
       });
-
-      console.log(result.data);
-      console.log("doneeeeeeeeeeeeeeeeeeeeeeeeeee");
-      handlePageChange("ReceiptW");
+      console.log("rasik");
+      console.log(result.data.status === 200);
+      if (result.data.status === 200) {
+        console.log(result.data.data.transaction_id);
+        setData((prev) => ({
+          ...prev,
+          date: getCurrentDate(),
+          transactionID: result.data.data.transaction_id,
+          cardNo: "XXXX XXXX XXXX " + result.data.data.card_no.slice(12, 16),
+          amount: result.data.data.amount,
+          status: result.data.data.transaction_status,
+          balance: result.data.data.balance,
+        }));
+      } else {
+        setData((prev) => ({
+          ...prev,
+          date: getCurrentDate(),
+          // transactionID: result.data.data.transaction_id,
+          cardNo: "XXXX XXXX XXXX " + data.cardNo.slice(12, 16),
+          amount: data.amount,
+          status: result.data.message,
+        }));
+      }
+      handlePageChange("Receipt");
     } catch (error) {
       console.error();
     }
@@ -188,14 +289,28 @@ const Homepage = () => {
           setScreenOutput((prev) => prev + key);
         }
       } else if (currentPage === "InputFieldEnterPin") {
-        console.log("hii");
+        // console.log("hii");
         if (screenOutput.length < 4) {
           setScreenOutput((prev) => prev + key);
         }
+      } else if (currentPage === "InputFieldEnterAmount") {
+        setScreenOutput((prev) => prev + key);
       }
     } else if (key === "CLEAR") {
       setScreenOutput("");
     } else if (key === "CANCEL") {
+      setData({
+        cardHolder: "",
+        date: "",
+        transactionID: "",
+        cardNo: "",
+        transactiontype: "",
+        ReceiverAccountHolder: "",
+        amount: "",
+        status: "pending",
+        balance: "",
+        cardAccountType: "",
+      });
       handlePageChange("Welcome");
     } else if (key === "DELETE") {
       let temp = screenOutput.slice(0, screenOutput.length - 1);
@@ -207,27 +322,51 @@ const Homepage = () => {
       // console.log("hii");
 
       if (currentPage == "Welcome") {
+        setData({
+          cardHolder: "",
+          date: "",
+          transactionID: "",
+          cardNo: "",
+          transactiontype: "",
+          ReceiverAccountHolder: "",
+          amount: "",
+          status: "pending",
+          balance: "",
+          cardAccountType: "",
+        });
         handlePageChange("InsertCard");
       } else if (currentPage === "InsertCard") {
         if (screenOutput.length === 16) {
           cardVerify();
         }
-      } else if (currentPage === "InputFieldEnterPin") {    //// yet to sort
+      } else if (
+        currentPage === "InputFieldEnterPin" &&
+        data.transactiontype === "withdrawal"
+      ) {
+        //// yet to sort
         if (screenOutput.length === 4) {
           Withdrawal();
         }
-      } else if (currentPage === "InputFieldEnterPin") {
+      } else if (
+        currentPage === "InputFieldEnterPin" &&
+        data.transactiontype === "inquiry"
+      ) {
         if (screenOutput.length === 4) {
           balanceCheck();
         }
+      } else if (currentPage === "InputFieldEnterAmount") {
+        //function to called
+        AmountCheck();
       }
     }
   };
 
   return (
     <>
+      {/* {currentPage} */}
       <div className="home">
         <div id="output-screen">
+          {/* {data.transactiontype} */}
           {/* {currentComponent === "" ? (
             <Welcome handleChange={handleChange} />
           ) : (
@@ -235,6 +374,7 @@ const Homepage = () => {
           )} */}
           {/* {currentPage}
           {screenOutput} */}
+          {/* {data.transactiontype} */}
           {pages.Welcome ? <Welcome handlePageChange={handlePageChange} /> : ""}
           {pages.InsertCard ? (
             <InsertCard
@@ -254,7 +394,7 @@ const Homepage = () => {
               Type="Accounttype"
               handlePageChange={handlePageChange}
               accType={data.cardAccountType}
-              cardNo={data.cardNumber}
+              cardNo={data.cardNo}
               cardHolder={data.cardHolder}
             />
           ) : (
@@ -264,8 +404,8 @@ const Homepage = () => {
             <Options
               Type="Transactiontype"
               handlePageChange={handlePageChange}
-              cardNo={cardNo}
-              cardHolder={cardHolder}
+              cardNo={data.cardNo}
+              cardHolder={data.cardHolder}
             />
           ) : (
             ""
@@ -277,7 +417,8 @@ const Homepage = () => {
               page="withdrawal"
               handlePageChange={handlePageChange}
               setDenominations={setDenominations}
-              withdrawalAmt={withdrawalAmt}
+              withdrawalAmt={data.amount}
+              atmDenominations={atmDenominations}
             />
           ) : (
             ""
@@ -304,7 +445,9 @@ const Homepage = () => {
             <InputField
               message="Enter Amount"
               handlePageChange={handlePageChange}
-              setWithdrawalAmt={setWithdrawalAmt}
+              Amount={screenOutput}
+              // setWithdrawalAmt={setWithdrawalAmt}
+              AmountCheck={AmountCheck}
             />
           ) : (
             ""
@@ -316,6 +459,7 @@ const Homepage = () => {
               pin={screenOutput}
               balanceCheck={balanceCheck}
               Withdrawal={Withdrawal}
+              transactionType={data.transactiontype}
             />
           ) : (
             ""
@@ -342,13 +486,15 @@ const Homepage = () => {
             ""
           )}
           {/* {pages.Receipt?<Receipt />:''} */}
-          {pages.ReceiptInq ? (
+          {pages.Receipt ? (
             <Receipt
               cardHolderName={data.cardHolder}
               Date={data.date}
+              transactionID={data.transactionID}
               CardNo={data.cardNo}
-              type="inquiry"
-              amount={""}
+              type={data.transactiontype}
+              amount={data.amount}
+              ReceiverAccountHolder={data.ReceiverAccountHolder}
               status={data.status}
               balance={data.balance}
               handlePageChange={handlePageChange}
@@ -358,7 +504,7 @@ const Homepage = () => {
             ""
           )}
 
-          {pages.ReceiptFndT ? (
+          {/* {pages.ReceiptFndT ? (
             <Receipt
               cardHolderName="Aayushi Amonkar"
               Date="03/08/2023 11:00"
@@ -373,9 +519,9 @@ const Homepage = () => {
             />
           ) : (
             ""
-          )}
+          )} */}
 
-          {pages.ReceiptDep ? (
+          {/* {pages.ReceiptDep ? (
             <Receipt
               cardHolderName="Aayushi Amonkar"
               Date="03/08/2023 11:00"
@@ -389,9 +535,9 @@ const Homepage = () => {
             />
           ) : (
             ""
-          )}
+          )} */}
 
-          {pages.ReceiptW ? (
+          {/* {pages.ReceiptW ? (
             <Receipt
               cardHolderName="Aayushi Amonkar"
               Date="03/08/2023 11:00"
@@ -405,52 +551,9 @@ const Homepage = () => {
             />
           ) : (
             ""
-          )}
+          )} */}
         </div>
         <Keyboard onKeyClick={handleKeyClick} />
-        {/* <div id="keypad">
-          <div>
-            <div className="keypad-row">
-              <Keys num={"1"} />
-              <Keys num={"2"} />
-              <Keys num={"3"} marginright={"6%"} />
-              <Keys
-                num={"CANCEL"}
-                colour={"#D5193C"}
-                size={"small"}
-                width={"85px"}
-              />
-            </div>
-            <div className="keypad-row">
-              <Keys num={"4"} />
-              <Keys num={"5"} />
-              <Keys num={"6"} marginright={"6%"} />
-              <Keys
-                num={"CLEAR"}
-                colour={"#FFE484"}
-                size={"small"}
-                width={"85px"}
-              />
-            </div>
-            <div className="keypad-row">
-              <Keys num={"7"} />
-              <Keys num={"8"} />
-              <Keys num={"9"} marginright={"6%"} />
-              <Keys
-                num={"ENTER"}
-                colour={"#008229"}
-                size={"small"}
-                width={"85px"}
-              />
-            </div>
-            <div className="keypad-row">
-              <Keys num={" "} />
-              <Keys num={"0"} />
-              <Keys num={"."} marginright={"6%"} />
-              <Keys num={""} size={"small"} width={"85px"} />
-            </div>
-          </div>
-        </div> */}
       </div>
     </>
   );

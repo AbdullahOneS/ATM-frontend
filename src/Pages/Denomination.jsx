@@ -3,7 +3,7 @@ import Rupee100 from "../images/100-rupee.png";
 import Rupee200 from "../images/200-rupee.png";
 import Rupee500 from "../images/500-rupee.png";
 import Rupee2000 from "../images/2000-rupee.png";
-import { Button } from "antd";
+import { Button, Form } from "antd";
 import axios from "axios";
 import Api from "../Api";
 
@@ -13,14 +13,13 @@ const Denomination = ({
   handlePageChange,
   setDenominations,
   withdrawalAmt,
+  atmDenominations,
+  setWithdrawDenominations,
 }) => {
-  const [message, setMessage] = useState(
-    "Error! Selected Denomination not available"
-  );
-
-  // var suggDenominations = {
-  //   'n_100': 0, 'n_200': 0, 'n_500': 0, 'n_2000': 0
-  // }
+  const [message, setMessage] = useState("");
+  const [form] = Form.useForm();
+  const [, forceUpdate] = useState({});
+  const [remainingAmt, setremainingAmt] = useState(0);
 
   const [suggDenominations, setsuggDenominations] = useState({
     n_100: 0,
@@ -28,93 +27,202 @@ const Denomination = ({
     n_500: 0,
     n_2000: 0,
   });
+  let totalAmount =
+    suggDenominations.n_100 * 100 +
+    suggDenominations.n_200 * 200 +
+    suggDenominations.n_500 * 500 +
+    suggDenominations.n_2000 * 2000;
+  // const [atmDenominations, setAtm_denominations] = useState({});
 
-  const atm_denominations = { n_100: 0, n_200: 0, n_500: 0, n_2000: 0 };
+  // var atmDenominations = { n_100: 0, n_200: 0, n_500: 0, n_2000: 0 };
+
+  // const getDeno = async () => {
+  //   console.log("hii i m here");
+
+  //   try {
+  //     var result = await Api.post("withdrawal/denomination", {
+  //       atm_id: 1,
+  //     });
+
+  //     console.log(result.data);
+
+  //     // atmDenominations.n_100 = result.data.data.n_100;
+
+  //     // atmDenominations.n_200 = result.data.data.n_200;
+
+  //     // atmDenominations.n_500 = result.data.data.n_500;
+
+  //     // atmDenominations.n_2000 = result.data.data.n_2000;
+
+  //     setAtm_denominations({
+  //       n_100: result.data.data.n_100,
+
+  //       n_200: result.data.data.n_200,
+
+  //       n_500: result.data.data.n_500,
+
+  //       n_2000: result.data.data.n_2000,
+  //     });
+
+  //     denominationSugg(
+  //       {
+  //         n_100: result.data.data.n_100,
+
+  //         n_200: result.data.data.n_200,
+
+  //         n_500: result.data.data.n_500,
+
+  //         n_2000: result.data.data.n_2000,
+  //       },
+
+  //       withdrawalAmt
+  //     );
+
+  //     // console.log(atmDenominations);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   useEffect(() => {
-    async function getDeno() {
-      try {
-        var result = await Api.post("withdrawal/denomination", {
-          atm_id: 1,
-        });
+    console.log("heee");
+    console.log(atmDenominations);
+    // getDeno();
 
-        atm_denominations.n_100 = result.data.data.n_100;
-        atm_denominations.n_200 = result.data.data.n_200;
-        atm_denominations.n_500 = result.data.data.n_500;
-        atm_denominations.n_2000 = result.data.data.n_2000;
-        denominationSugg(atm_denominations, withdrawalAmt);
-
-        // console.log(atm_denominations);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    getDeno();
+    denominationSugg(atmDenominations, withdrawalAmt);
   }, []);
 
-  useEffect(() => {
-    setDenominations(suggDenominations);
-    // Calculate the total amount
-    const totalAmount =
+  // const validateAmount = () => {
+  //   setDenominations(suggDenominations);
+
+  //   // Calculate the total amount
+
+  //   const totalAmount =
+  //     suggDenominations.n_100 * 100 +
+  //     suggDenominations.n_200 * 200 +
+  //     suggDenominations.n_500 * 500 +
+  //     suggDenominations.n_2000 * 2000;
+
+  //   // Check if total amount exceeds the withdrawal amount
+
+  //   if (totalAmount > withdrawalAmt) {
+  //     setMessage("Total amount exceeds withdrawal limit.");
+
+  //     // return true;
+  //   } else {
+  //     setMessage("");
+
+  //     // return false;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   validateAmount();
+  // }, [suggDenominations]);
+
+  const handleIncrement = (value) => {
+    let totalAmount =
       suggDenominations.n_100 * 100 +
       suggDenominations.n_200 * 200 +
       suggDenominations.n_500 * 500 +
       suggDenominations.n_2000 * 2000;
-    // Check if total amount exceeds the withdrawal amount
-    if (totalAmount > withdrawalAmt) {
-      setMessage("Total amount exceeds withdrawal limit.");
-    } else {
-      setMessage("");
-    }
-  }, [suggDenominations, setDenominations, withdrawalAmt]);
-
-  const handleIncrement = (value) => {
     if (value === 100) {
-      if (suggDenominations.n_100 + 1 <= Math.floor(withdrawalAmt / value)) {
-        setsuggDenominations({
-          ...suggDenominations,
-          n_100: suggDenominations.n_100 + 1,
-        });
+      //atm has no more 100 notes cant increment
+      if (suggDenominations.n_100 <= atmDenominations.n_100) {
+        //withdrawal amt is less
+        if (suggDenominations.n_100 + 1 <= Math.floor(withdrawalAmt / value)) {
+          if (100 + totalAmount > parseInt(withdrawalAmt)) {
+            setMessage("Withdrawal amount limit exceed");
+          } else {
+            setMessage("");
+            setremainingAmt((prev) => prev - 100);
+            setsuggDenominations({
+              ...suggDenominations,
+              n_100: suggDenominations.n_100 + 1,
+            });
+          }
+        } else {
+          setMessage(`Cannot add more ${value} notes.`);
+        }
       } else {
-        setMessage(`Cannot add more ${value} notes.`);
+        setMessage(`No cash to dispense.`);
       }
     } else if (value === 200) {
-      if (suggDenominations.n_200 + 1 <= Math.floor(withdrawalAmt / value)) {
-        setsuggDenominations({
-          ...suggDenominations,
-          n_200: suggDenominations.n_200 + 1,
-        });
+      if (suggDenominations.n_200 <= atmDenominations.n_200) {
+        if (suggDenominations.n_200 + 1 <= Math.floor(withdrawalAmt / value)) {
+          if (200 + totalAmount > parseInt(withdrawalAmt)) {
+            setMessage("Withdrawal amount limit exceed");
+          } else {
+            setMessage("");
+            setsuggDenominations({
+              ...suggDenominations,
+              n_200: suggDenominations.n_200 + 1,
+            });
+            setremainingAmt((prev) => prev - 200);
+          }
+        } else {
+          setMessage(`Cannot add more ${value} notes.`);
+        }
       } else {
-        setMessage(`Cannot add more ${value} notes.`);
+        setMessage(`No cash to dispense.`);
       }
     } else if (value === 500) {
-      if (suggDenominations.n_500 + 1 <= Math.floor(withdrawalAmt / value)) {
-        setsuggDenominations({
-          ...suggDenominations,
-          n_500: suggDenominations.n_500 + 1,
-        });
+      if (suggDenominations.n_500 <= atmDenominations.n_500) {
+        if (suggDenominations.n_500 + 1 <= Math.floor(withdrawalAmt / value)) {
+          if (500 + totalAmount > parseInt(withdrawalAmt)) {
+            setMessage("Withdrawal amount limit exceed");
+          } else {
+            setMessage("");
+            setsuggDenominations({
+              ...suggDenominations,
+              n_500: suggDenominations.n_500 + 1,
+            });
+            setremainingAmt((prev) => prev - 500);
+          }
+        } else {
+          setMessage(`Cannot add more ${value} notes.`);
+        }
       } else {
-        setMessage(`Cannot add more ${value} notes.`);
+        setMessage(`No cash to dispense.`);
       }
     } else if (value === 2000) {
-      if (suggDenominations.n_2000 + 1 <= Math.floor(withdrawalAmt / value)) {
-        setsuggDenominations({
-          ...suggDenominations,
-          n_2000: suggDenominations.n_2000 + 1,
-        });
+      if (suggDenominations.n_2000 <= atmDenominations.n_2000) {
+        if (suggDenominations.n_2000 + 1 <= Math.floor(withdrawalAmt / value)) {
+          if (2000 + totalAmount > parseInt(withdrawalAmt)) {
+            setMessage("Withdrawal amount limit exceed");
+          } else {
+            setMessage("");
+            setsuggDenominations({
+              ...suggDenominations,
+              n_2000: suggDenominations.n_2000 + 1,
+            });
+            setremainingAmt((prev) => prev - 2000);
+          }
+        } else {
+          setMessage(`Cannot add more ${value} notes.`);
+        }
       } else {
-        setMessage(`Cannot add more ${value} notes.`);
+        setMessage(`No cash to dispense.`);
       }
     }
   };
 
   const handleDecrement = (value) => {
+    let totalAmount =
+      suggDenominations.n_100 * 100 +
+      suggDenominations.n_200 * 200 +
+      suggDenominations.n_500 * 500 +
+      suggDenominations.n_2000 * 2000;
     if (value === 100) {
+      //cant have -ve  no of notes
       if (suggDenominations.n_100 - 1 >= 0) {
         setsuggDenominations({
           ...suggDenominations,
           n_100: suggDenominations.n_100 - 1,
         });
+        setMessage("");
+
+        setremainingAmt((prev) => prev + 100);
       } else {
         setMessage(`Cannot subtract more ${value} notes.`);
       }
@@ -124,6 +232,8 @@ const Denomination = ({
           ...suggDenominations,
           n_200: suggDenominations.n_200 - 1,
         });
+        setMessage("");
+        setremainingAmt((prev) => prev + 200);
       } else {
         setMessage(`Cannot subtract more ${value} notes.`);
       }
@@ -133,6 +243,8 @@ const Denomination = ({
           ...suggDenominations,
           n_500: suggDenominations.n_500 - 1,
         });
+        setMessage("");
+        setremainingAmt((prev) => prev + 500);
       } else {
         setMessage(`Cannot subtract more ${value} notes.`);
       }
@@ -142,6 +254,8 @@ const Denomination = ({
           ...suggDenominations,
           n_2000: suggDenominations.n_2000 - 1,
         });
+        setMessage("");
+        setremainingAmt((prev) => prev + 2000);
       } else {
         setMessage(`Cannot subtract more ${value} notes.`);
       }
@@ -149,10 +263,11 @@ const Denomination = ({
   };
 
   const denominationSugg = (denominations, withdrawalAmt) => {
-    var n_2000 = 0;
-    var n_500 = 0;
-    var n_200 = 0;
-    var n_100 = 0;
+    let n_2000 = 0;
+    let n_500 = 0;
+    let n_200 = 0;
+    let n_100 = 0;
+
     if (withdrawalAmt >= 2000 && denominations.n_2000 > 0) {
       n_2000 = Math.floor(withdrawalAmt / 2000);
       if (denominations.n_2000 < n_2000) {
@@ -187,9 +302,9 @@ const Denomination = ({
       n_500: n_500,
       n_2000: n_2000,
     });
-
-    console.log(n_2000, n_500, n_200, n_100);
   };
+
+  // console.log(suggDenominations);
 
   return (
     <>
@@ -201,7 +316,9 @@ const Denomination = ({
           Total Amount : {withdrawalAmt}
         </div>
 
+        {/* {eval(withdrawalAmt)} */}
         <div className="denominations">
+          {/* {withdrawalAmt} */}
           <div className="note">
             <img src={Rupee100} className="notePic" />
             <div className="counter">
@@ -239,27 +356,61 @@ const Denomination = ({
             <div className="Amount">{suggDenominations.n_2000 * 2000}</div>
           </div>
         </div>
-
+        <div
+          style={{
+            // border: "1px solid red",
+            textAlign: "right",
+            color: "purple",
+            fontWeight: "300",
+            fontSize: "12pt",
+            textDecoration: "underline",
+            marginBottom: "1%",
+          }}
+        >
+          {remainingAmt === 0 ? "" : `Add ${remainingAmt} to Proceed`}
+        </div>
         <div style={{ display: "flex", justifyContent: "right" }}>
-          {message.length > 0 ? (
-            ""
-          ) : (
-            <Button
-              style={{
-                backgroundColor: "#0E77BD",
-                width: "200px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "40px",
-                color: "white",
-                borderRadius: "10px",
-              }}
-              onClick={() => handlePageChange("InputFieldEnterPin")}
-            >
-              Proceed
-            </Button>
-          )}
+          {/* <Button
+            style={{
+              backgroundColor: "#0E77BD",
+              width: "200px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "40px",
+              color: "white",
+              borderRadius: "10px",
+            }}
+            onClick={() => handlePageChange("InputFieldEnterPin")}
+          >
+            Proceed
+          </Button> */}
+
+          <Form form={form} name="horizontal_login">
+            <Form.Item shouldUpdate>
+              {() => (
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  disabled={
+                    suggDenominations.n_100 * 100 +
+                      suggDenominations.n_200 * 200 +
+                      suggDenominations.n_500 * 500 +
+                      suggDenominations.n_2000 * 2000 !==
+                    parseInt(withdrawalAmt)
+                      ? true
+                      : false
+                  }
+                  onClick={() => {
+                    setDenominations(suggDenominations);
+                    handlePageChange("InputFieldEnterPin");
+                  }}
+                >
+                  Proceed
+                </Button>
+              )}
+            </Form.Item>
+          </Form>
         </div>
       </div>
     </>
