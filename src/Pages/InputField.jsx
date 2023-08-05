@@ -19,6 +19,11 @@ const InputField = ({
   transactionType,
   Amount,
   AmountCheck,
+  accountNo,
+  CheckReceiverAcc,
+  ReceiverAccountHolder,
+  setTranferAmt,
+  transferAmt,
 }) => {
   const [inputValue, setInputValue] = useState("");
   let page = "";
@@ -28,8 +33,8 @@ const InputField = ({
   let otpmessage = "";
   let AccountHolderName = "";
   let transferBlock = "";
-  if (Transactiontype === "transfer") {
-    AccountHolderName = "Aayushi Amonkar";
+  if (transactionType === "transfer") {
+    // AccountHolderName = {ReceiverAccountHolder};
     transferBlock = (
       <div
         style={{
@@ -41,12 +46,18 @@ const InputField = ({
           backgroundColor: "#ffe484",
         }}
       >
-        Transferring to {AccountHolderName}
+        Transferring to {ReceiverAccountHolder}
       </div>
     );
   }
   if (message === "Enter Amount") {
-    input = <DetailField message={message} Amount={Amount} />;
+    input = (
+      <DetailField
+        message={message}
+        Amount={Amount}
+        transactionType={transactionType}
+      />
+    );
     page = "Denominationw";
     buttonText = "Proceed";
   } else if (message === "Enter Pin") {
@@ -56,7 +67,7 @@ const InputField = ({
     page = "ReceiptW";
     buttonText = "Proceed";
   } else if (message === "Enter Account Number") {
-    input = <DetailField message={message} />;
+    input = <DetailField message={message} accountNo={accountNo} />;
     page = "InputFieldEnterAmount";
     buttonText = "Proceed";
   } else {
@@ -84,7 +95,9 @@ const InputField = ({
 
   return (
     <>
-      {/* {transactionType} */}
+      {/* {transactionType}
+      {ReceiverAccountHolder}
+       */}
       <div
         style={{
           display: "block",
@@ -147,7 +160,13 @@ const InputField = ({
                   borderRadius: "5px",
                 }}
                 onClick={() => {
-                  console.log("i m here");
+                  // console.log("i m here");
+                  if (
+                    message === "Enter Account Number" &&
+                    accountNo.length === 14
+                  ) {
+                    CheckReceiverAcc();
+                  }
                   if (
                     message === "Enter Pin" &&
                     transactionType === "inquiry"
@@ -158,8 +177,22 @@ const InputField = ({
                     transactionType === "withdrawal"
                   ) {
                     Withdrawal();
+                  } else if (
+                    message === "Enter Pin" &&
+                    transactionType === "Fund Transfer"
+                  ) {
+                    transferAmt();
                   }
-                  if (message === "Enter Amount") {
+                  if (
+                    message === "Enter Amount" &&
+                    transactionType === "transfer"
+                  ) {
+                    setTranferAmt();
+                  }
+                  if (
+                    message === "Enter Amount" &&
+                    transactionType === "withdrawal"
+                  ) {
                     // handlePageChange(page);
                     AmountCheck();
                   }

@@ -29,7 +29,7 @@ const TransactionType = ({ handlePageChange }) => {
       <Button
         className="OptionButton"
         onClick={() =>
-          handlePageChange("InputFieldEnterAccNo", "success", "fund Transfer")
+          handlePageChange("InputFieldEnterAccNo", "success", "Fund Transfer")
         }
       >
         Fund Transfer

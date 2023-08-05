@@ -41,7 +41,8 @@ const Homepage = () => {
   const [errormsg, setErrorMsg] = useState("");
   const [cardHolder, setCardHolder] = useState("");
 
-  const [accType, setacctype] = useState("");
+  const [receiverAccountHolderName, setReceiverAccountHolderName] =
+    useState("");
 
   // console.log(denominations);
 
@@ -212,25 +213,7 @@ const Homepage = () => {
     }
   };
 
-  // const setWithdrawDenominations = (denomination) => {
-  //   // console.log(data);
-  //   // setDenominations(denomination);
-  //   // handlePageChange("InputFieldEnterPin");
-  // };
   const Withdrawal = async () => {
-    // console.log(withdrawalAmt, denominations, cardNo, screenOutput);
-    // console.log({
-    //   withdrawal_amt: withdrawalAmt,
-    //   denominations: denominations,
-    //   card_no: cardNo,
-    //   pin: screenOutput,
-    //   atm_id: 1,
-    // });
-
-    console.log("hii im in withdrawal");
-    // console.log(data);
-    // console.log(denominations);
-    // console.log(screenOutput);
     try {
       var result = await Api.post("withdrawal", {
         atm_id: 1,
@@ -239,7 +222,6 @@ const Homepage = () => {
         card_no: data.cardNo,
         pin: screenOutput,
       });
-      console.log("rasik");
       console.log(result.data.status === 200);
       if (result.data.status === 200) {
         console.log(result.data.data.transaction_id);
@@ -268,6 +250,40 @@ const Homepage = () => {
     }
   };
 
+  const transferAmt = async () => {
+    // console.log("hellllllllllllll0");
+    try {
+      var result = await Api.post("fundTransfer", {
+        atm_id: 1,
+        amount: data.amount,
+        receiver_acc_no: data.ReceiverAccountHolder,
+        card_no: data.cardNo,
+        pin: screenOutput,
+      });
+      // console.log(result.data);
+      let status = result.data.status === 200 ? "Successful" : result.message;
+      setData((prev) => ({
+        date: getCurrentDate(),
+        transactionID: "ID",
+        transactiontype: data.transactiontype,
+        amount: data.amount,
+        status: status,
+        balance: 100,
+      }));
+
+      handlePageChange("Receipt");
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  const setTranferAmt = () => {
+    setData((prev) => ({
+      ...prev,
+      amount: screenOutput,
+    }));
+    handlePageChange("InputFieldEnterPin");
+  };
   const handleKeyClick = (key) => {
     // Handle the key press and update the screen output based on the key and input type
 
@@ -294,6 +310,12 @@ const Homepage = () => {
           setScreenOutput((prev) => prev + key);
         }
       } else if (currentPage === "InputFieldEnterAmount") {
+        setScreenOutput((prev) => prev + key);
+      } else if (currentPage === "InputFieldEnterAccNo") {
+        if (screenOutput.length < 14) {
+          setScreenOutput((prev) => prev + key);
+        }
+      } else if (currentPage === "InputFieldTTtransfer") {
         setScreenOutput((prev) => prev + key);
       }
     } else if (key === "CLEAR") {
@@ -357,8 +379,44 @@ const Homepage = () => {
       } else if (currentPage === "InputFieldEnterAmount") {
         //function to called
         AmountCheck();
+      } else if (currentPage === "InputFieldEnterAccNo") {
+        if (screenOutput.length === 14) {
+          // handlePageChange("InputFieldTTtransfer");
+          CheckReceiverAcc();
+        }
+      } else if (currentPage === "InputFieldTTtransfer") {
+        setTranferAmt();
+      } else if (
+        currentPage === "InputFieldEnterPin" &&
+        data.transactiontype === "Fund Transfer"
+      ) {
+        if (screenOutput.length === 4) {
+          transferAmt();
+        }
       }
     }
+  };
+
+  const CheckReceiverAcc = async () => {
+    console.log("I m Receiver Account check");
+    try {
+      var result = await Api.post("fundTransfer/acc_name", {
+        receiver_acc_no: screenOutput,
+      });
+      // console.log(result.data.status);
+      if (result.data.status === 200) {
+        setReceiverAccountHolderName(result.data.data);
+        setData((prev) => ({
+          ...prev,
+          ReceiverAccountHolder: screenOutput, //here it will have receiver account holder name
+        }));
+        handlePageChange("InputFieldTTtransfer");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    //existing account or not
+    //considering acount exist
   };
 
   return (
@@ -380,9 +438,6 @@ const Homepage = () => {
             <InsertCard
               title="Card number"
               handlePageChange={handlePageChange}
-              // setCardNo={setCardNo}
-              // setCardHolder={setCardHolder}
-              // cardHolder={cardHolder}
               cardNumber={screenOutput}
               cardVerify={cardVerify}
             />
@@ -435,8 +490,11 @@ const Homepage = () => {
           {pages.InputFieldTTtransfer ? (
             <InputField
               message="Enter Amount"
-              Transactiontype="transfer"
+              transactionType="transfer"
               handlePageChange={handlePageChange}
+              ReceiverAccountHolder={receiverAccountHolderName} //send name of receiver
+              Amount={screenOutput}
+              setTranferAmt={setTranferAmt}
             />
           ) : (
             ""
@@ -460,6 +518,7 @@ const Homepage = () => {
               balanceCheck={balanceCheck}
               Withdrawal={Withdrawal}
               transactionType={data.transactiontype}
+              transferAmt={transferAmt}
             />
           ) : (
             ""
@@ -476,6 +535,8 @@ const Homepage = () => {
             <InputField
               message="Enter Account Number"
               handlePageChange={handlePageChange}
+              accountNo={screenOutput}
+              CheckReceiverAcc={CheckReceiverAcc}
             />
           ) : (
             ""
