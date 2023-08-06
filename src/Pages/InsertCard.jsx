@@ -118,7 +118,14 @@ const InsertCard = ({
             alignItems: "center",
           }}
         >
-          <h1 style={{ color: "white", marginBottom: "2%" }}>
+          <h1
+            style={{
+              color: "white",
+              marginBottom: "5%",
+              fontFamily: "Merriweather, serif",
+              fontSize: "15pt",
+            }}
+          >
             Enter Card Number
           </h1>
           {/* {cardNo} */}
@@ -127,9 +134,9 @@ const InsertCard = ({
           </div>
           <div
             style={{
-              boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+              // boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
               width: "50%",
-              backgroundColor: "whitesmoke",
+              // backgroundColor: "whitesmoke",
               padding: "2%",
               marginTop: "3%",
               display: "flex",

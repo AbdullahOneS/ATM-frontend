@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles.css";
 import Keys from "../Components/Keys";
 import Welcome from "../Components/Welcome";
@@ -10,6 +10,8 @@ import Error from "../Components/Error";
 import Receipt from "../Components/Receipt";
 import Keyboard from "../Components/Keyboard";
 import Api from "../Api";
+import Denominationdepo from "./Denominationdepo";
+
 const Homepage = () => {
   const getCurrentDate = () => {
     const now = new Date();
@@ -40,6 +42,23 @@ const Homepage = () => {
   const [cardNo, setCardNo] = useState("");
   const [errormsg, setErrorMsg] = useState("");
   const [cardHolder, setCardHolder] = useState("");
+
+  const [DepositAmount, setDepositAmount] = useState(0);
+  const [depoDenominations, setDepoDenominations] = useState({
+    n_100: 0,
+    n_200: 0,
+    n_500: 0,
+    n_2000: 0,
+  });
+
+  useEffect(() => {
+    setDepoDenominations({
+      n_100: 0,
+      n_200: 0,
+      n_500: 0,
+      n_2000: 0,
+    });
+  }, []);
 
   const [receiverAccountHolderName, setReceiverAccountHolderName] =
     useState("");
@@ -132,6 +151,44 @@ const Homepage = () => {
       // console.log(result.data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const depositAmount = async () => {
+    // console.log("helo");
+    // console.log(data);
+    try {
+      const result = await Api.post("deposit/add", {
+        card_no: data.cardNo,
+        pin: screenOutput,
+        denomination: depoDenominations,
+        atm_id: 1,
+      });
+      console.log(result.data);
+      if (result.data.status === 200) {
+        // console.log(result.data.data.transaction_id);
+        setData((prev) => ({
+          ...prev,
+          date: getCurrentDate(),
+          transactionID: result.data.data.transaction_id,
+          cardNo: "XXXX XXXX XXXX " + result.data.data.card_no.slice(12, 16),
+          amount: DepositAmount,
+          status: result.data.data.transaction_status,
+          // balance: result.data.data.balance,
+        }));
+      } else {
+        setData((prev) => ({
+          ...prev,
+          date: getCurrentDate(),
+          // transactionID: result.data.data.transaction_id,
+          cardNo: "XXXX XXXX XXXX " + data.cardNo.slice(12, 16),
+          amount: data.amount,
+          status: result.data.message,
+        }));
+      }
+      handlePageChange("Receipt");
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -393,6 +450,13 @@ const Homepage = () => {
         if (screenOutput.length === 4) {
           transferAmt();
         }
+      } else if (
+        currentPage === "InputFieldEnterPin" &&
+        data.transactiontype === "deposit"
+      ) {
+        if (screenOutput.length === 4) {
+          depositAmount();
+        }
       }
     }
   };
@@ -479,10 +543,14 @@ const Homepage = () => {
             ""
           )}
           {pages.Denominationd ? (
-            <Denomination
+            <Denominationdepo
               amount="2000"
               page="deposit"
               handlePageChange={handlePageChange}
+              DepositAmount={DepositAmount}
+              setDepositAmount={setDepositAmount}
+              depoDenominations={depoDenominations}
+              setDepoDenominations={setDepoDenominations}
             />
           ) : (
             ""
@@ -519,6 +587,7 @@ const Homepage = () => {
               Withdrawal={Withdrawal}
               transactionType={data.transactiontype}
               transferAmt={transferAmt}
+              depositAmount={depositAmount}
             />
           ) : (
             ""

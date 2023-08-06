@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DetailField from "../Components/DetailField";
 import PasswordField from "../Components/PasswordField";
-import { Button } from "antd";
+import { Alert, Button } from "antd";
 import Api from "../Api";
 
 const InputField = ({
@@ -24,6 +24,7 @@ const InputField = ({
   ReceiverAccountHolder,
   setTranferAmt,
   transferAmt,
+  depositAmount,
 }) => {
   const [inputValue, setInputValue] = useState("");
   let page = "";
@@ -48,6 +49,11 @@ const InputField = ({
       >
         Transferring to {ReceiverAccountHolder}
       </div>
+      // var text = `Transferring to ${ReceiverAccountHolder}`;
+      // <Alert
+      //   message="Transferring to ${ReceiverAccountHolder}"
+      //   type="warning"
+      // />
     );
   }
   if (message === "Enter Amount") {
@@ -95,9 +101,9 @@ const InputField = ({
 
   return (
     <>
-      {/* {transactionType}
-      {ReceiverAccountHolder}
-       */}
+      {/* {transactionType} */}
+      {/* {ReceiverAccountHolder} */}
+
       <div
         style={{
           display: "block",
@@ -195,6 +201,12 @@ const InputField = ({
                   ) {
                     // handlePageChange(page);
                     AmountCheck();
+                  }
+                  if (
+                    message === "Enter Pin" &&
+                    transactionType === "deposit"
+                  ) {
+                    depositAmount();
                   }
                 }}
               >

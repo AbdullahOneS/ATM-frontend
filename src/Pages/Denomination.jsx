@@ -3,7 +3,7 @@ import Rupee100 from "../images/100-rupee.png";
 import Rupee200 from "../images/200-rupee.png";
 import Rupee500 from "../images/500-rupee.png";
 import Rupee2000 from "../images/2000-rupee.png";
-import { Button, Form } from "antd";
+import { Alert, Button, Form } from "antd";
 import axios from "axios";
 import Api from "../Api";
 
@@ -32,57 +32,6 @@ const Denomination = ({
     suggDenominations.n_200 * 200 +
     suggDenominations.n_500 * 500 +
     suggDenominations.n_2000 * 2000;
-  // const [atmDenominations, setAtm_denominations] = useState({});
-
-  // var atmDenominations = { n_100: 0, n_200: 0, n_500: 0, n_2000: 0 };
-
-  // const getDeno = async () => {
-  //   console.log("hii i m here");
-
-  //   try {
-  //     var result = await Api.post("withdrawal/denomination", {
-  //       atm_id: 1,
-  //     });
-
-  //     console.log(result.data);
-
-  //     // atmDenominations.n_100 = result.data.data.n_100;
-
-  //     // atmDenominations.n_200 = result.data.data.n_200;
-
-  //     // atmDenominations.n_500 = result.data.data.n_500;
-
-  //     // atmDenominations.n_2000 = result.data.data.n_2000;
-
-  //     setAtm_denominations({
-  //       n_100: result.data.data.n_100,
-
-  //       n_200: result.data.data.n_200,
-
-  //       n_500: result.data.data.n_500,
-
-  //       n_2000: result.data.data.n_2000,
-  //     });
-
-  //     denominationSugg(
-  //       {
-  //         n_100: result.data.data.n_100,
-
-  //         n_200: result.data.data.n_200,
-
-  //         n_500: result.data.data.n_500,
-
-  //         n_2000: result.data.data.n_2000,
-  //       },
-
-  //       withdrawalAmt
-  //     );
-
-  //     // console.log(atmDenominations);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   useEffect(() => {
     console.log("heee");
@@ -91,34 +40,6 @@ const Denomination = ({
 
     denominationSugg(atmDenominations, withdrawalAmt);
   }, []);
-
-  // const validateAmount = () => {
-  //   setDenominations(suggDenominations);
-
-  //   // Calculate the total amount
-
-  //   const totalAmount =
-  //     suggDenominations.n_100 * 100 +
-  //     suggDenominations.n_200 * 200 +
-  //     suggDenominations.n_500 * 500 +
-  //     suggDenominations.n_2000 * 2000;
-
-  //   // Check if total amount exceeds the withdrawal amount
-
-  //   if (totalAmount > withdrawalAmt) {
-  //     setMessage("Total amount exceeds withdrawal limit.");
-
-  //     // return true;
-  //   } else {
-  //     setMessage("");
-
-  //     // return false;
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   validateAmount();
-  // }, [suggDenominations]);
 
   const handleIncrement = (value) => {
     let totalAmount =
@@ -308,10 +229,21 @@ const Denomination = ({
 
   return (
     <>
-      <div style={{ display: "block", margin: "0" }}>
-        {message !== "" ? <div className="Error-box">{message}</div> : ""}
+      <div style={{ display: "block", margin: "10px" }}>
+        {/* {message !== "" ? <div className="Error-box">{message}</div> : ""} */}
+        {message !== "" ? (
+          <Alert message={message} type="error" showIcon />
+        ) : (
+          ""
+        )}
+
         <div
-          style={{ textAlign: "right", marginRight: "5%", fontWeight: "bold" }}
+          style={{
+            textAlign: "right",
+            marginRight: "5%",
+            marginTop: "2%",
+            fontWeight: "bold",
+          }}
         >
           Total Amount : {withdrawalAmt}
         </div>
