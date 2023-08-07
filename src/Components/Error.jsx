@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../styles.css";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-const Error = ({ message }) => {
+const Error = ({ message, handlePageChange }) => {
+  useEffect(() => {
+    setTimeout(() => {
+      handlePageChange("Welcome");
+    }, 5000);
+  }, []);
   return (
     <>
       <div

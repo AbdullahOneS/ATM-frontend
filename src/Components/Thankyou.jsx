@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-const Thankyou = () => {
+const Thankyou = ({ handlePageChange }) => {
+  useEffect(() => {
+    setTimeout(() => {
+      handlePageChange("Welcome");
+    }, 5000);
+  }, []);
+
   return (
     <>
       <div

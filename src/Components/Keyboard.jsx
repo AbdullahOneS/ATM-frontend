@@ -4,25 +4,49 @@ import Keys from "./Keys";
 
 import "../styles.css";
 
-const Keyboard = ({ onKeyClick }) => {
+const Keyboard = ({ onKeyClick, handlePageChange, play }) => {
   return (
     <>
       <div id="keypad">
         <div>
           <div className="keypad-row">
-            <button className="btn" onClick={() => onKeyClick("1")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("1");
+              }}
+            >
               <Keys num={"1"} />
             </button>
 
-            <button className="btn" onClick={() => onKeyClick("2")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("2");
+              }}
+            >
               <Keys num={"2"} />
             </button>
 
-            <button className="btn" onClick={() => onKeyClick("3")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("3");
+              }}
+            >
               <Keys num={"3"} marginright={"6%"} />
             </button>
 
-            <button className="btn" onClick={() => onKeyClick("CANCEL")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("CANCEL");
+              }}
+            >
               <Keys
                 num={"CANCEL"}
                 colour={"#D5193C"}
@@ -33,19 +57,43 @@ const Keyboard = ({ onKeyClick }) => {
           </div>
 
           <div className="keypad-row">
-            <button className="btn" onClick={() => onKeyClick("4")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("4");
+              }}
+            >
               <Keys num={"4"} />
             </button>
 
-            <button className="btn" onClick={() => onKeyClick("5")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("5");
+              }}
+            >
               <Keys num={"5"} />
             </button>
 
-            <button className="btn" onClick={() => onKeyClick("6")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("6");
+              }}
+            >
               <Keys num={"6"} marginright={"6%"} />
             </button>
 
-            <button className="btn" onClick={() => onKeyClick("DELETE")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("DELETE");
+              }}
+            >
               <Keys
                 num={"DELETE"}
                 colour={"#FFE484"}
@@ -56,15 +104,33 @@ const Keyboard = ({ onKeyClick }) => {
           </div>
 
           <div className="keypad-row">
-            <button className="btn" onClick={() => onKeyClick("7")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("7");
+              }}
+            >
               <Keys num={"7"} />
             </button>
 
-            <button className="btn" onClick={() => onKeyClick("8")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("8");
+              }}
+            >
               <Keys num={"8"} />
             </button>
 
-            <button className="btn" onClick={() => onKeyClick("9")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("9");
+              }}
+            >
               <Keys num={"9"} marginright={"6%"} />
             </button>
 
@@ -83,7 +149,13 @@ const Keyboard = ({ onKeyClick }) => {
               <Keys num={" "} />
             </button>
 
-            <button className="btn" onClick={() => onKeyClick("0")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("0");
+              }}
+            >
               <Keys num={"0"} />
             </button>
 
@@ -91,7 +163,13 @@ const Keyboard = ({ onKeyClick }) => {
               <Keys num={"."} marginright={"6%"} />
             </button>
 
-            <button className="btn" onClick={() => onKeyClick("CLEAR")}>
+            <button
+              className="btn"
+              onClick={() => {
+                play();
+                onKeyClick("CLEAR");
+              }}
+            >
               <Keys
                 num={"CLEAR"}
                 size={"small"}

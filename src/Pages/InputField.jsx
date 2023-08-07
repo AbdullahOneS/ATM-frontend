@@ -162,7 +162,23 @@ const InputField = ({
                 margin: "6% 0%",
               }}
             >
+              {/* {message === "Enter Pin"
+                ? pin.length < 4
+                : message === "Enter OTP"
+                ? pin.length < 6
+                : message === "Enter Account Number"
+                ? accountNo.length < 14
+                : Amount.length < 0} */}
               <Button
+                disabled={
+                  message === "Enter Pin"
+                    ? pin.length < 4
+                    : message === "Enter OTP"
+                    ? pin.length < 6
+                    : message === "Enter Account Number"
+                    ? accountNo.length < 14
+                    : Amount.length < 0
+                }
                 style={{
                   backgroundColor: "#0E77BD",
                   width: "100px",
@@ -183,7 +199,8 @@ const InputField = ({
                   }
                   if (
                     message === "Enter Pin" &&
-                    transactionType === "inquiry"
+                    transactionType === "inquiry" &&
+                    pin.length === 4
                   ) {
                     balanceCheck();
                   } else if (

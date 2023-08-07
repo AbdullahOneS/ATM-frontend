@@ -23,21 +23,21 @@ const ReceiptTemplate = ({
     <>
       <div
         style={{
-          height: "90%",
-
-          width: "90%",
+          height: "100%",
+          padding: "10%",
+          width: "100%",
+          position: "relative",
         }}
       >
         {/* {type} */}
-
-        <div style={{ display: "flex", alignItems: "center" }}>
-          ...............................................................................
-        </div>
-
-        <h4 style={{ textAlign: "center" }}>ATM TRANSACTION</h4>
-
-        <div style={{ display: "flex", alignItems: "center" }}>
-          ...............................................................................
+        <div style={{ textAlign: "center" }}>
+          <p>
+            .....................................................................
+          </p>
+          <h4>ATM TRANSACTION</h4>
+          <p>
+            .....................................................................
+          </p>
         </div>
 
         <div
@@ -66,7 +66,7 @@ const ReceiptTemplate = ({
           <span style={{ textAlign: "right" }}>{Date}</span>
         </div>
 
-        {type === "inquiry" ? (
+        {type === "inquiry" || transactionID === "" ? (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span style={{ textAlign: "left" }}></span>
 
@@ -137,21 +137,13 @@ const ReceiptTemplate = ({
         <div
           style={{
             backgroundColor: "black",
-
             color: "white",
-
             width: "302px",
-
-            position: "relative",
-
-            left: "-15px",
-
-            bottom: "-106.5px",
-
+            position: "absolute",
+            left: "0",
+            bottom: "0",
             height: "40px",
-
             textAlign: "center",
-
             paddingTop: "3.5%",
           }}
         >

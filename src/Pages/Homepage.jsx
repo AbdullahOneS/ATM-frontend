@@ -13,11 +13,15 @@ import Api from "../Api";
 import Denominationdepo from "./Denominationdepo";
 import Report from "../Components/Report";
 import Thankyou from "../Components/Thankyou";
+import beep from "../Sound/atmbeep.mp3";
+import useSound from "use-sound";
 
 const Homepage = () => {
+  const [play] = useSound(beep);
+
+  //to get current day time
   const getCurrentDate = () => {
     const now = new Date();
-
     // Get day, month, year, hours, and minutes
     const day = String(now.getDate()).padStart(2, "0");
     const month = String(now.getMonth() + 1).padStart(2, "0"); // Month is zero-based
@@ -33,6 +37,7 @@ const Homepage = () => {
   const [currentPage, setCurrentPage] = useState("");
   //withdrawal data
   const [withdrawalAmt, setWithdrawalAmt] = useState(0);
+  const [accountNOReport, setAccountNOReport] = useState("");
   const [denominations, setDenominations] = useState({
     n_100: 0,
     n_200: 0,
@@ -131,6 +136,7 @@ const Homepage = () => {
           buttonText: "Verify",
           errorMsg: "OTP sent successfully",
         }));
+        setAccountNOReport(screenOutput);
         setReportType(6);
         setScreenOutput("");
       } else {
@@ -142,6 +148,7 @@ const Homepage = () => {
   };
 
   const handlePageChange = (pageKey, message, type) => {
+    play();
     // if (message == "success") {
     if (type) {
       setData((prev) => ({
@@ -303,7 +310,7 @@ const Homepage = () => {
           cardNo: "XXXX XXXX XXXX " + cardNo.slice(12, 16),
           balance: result.data.data.balance,
           cardHolder: result.data.data.name,
-          status: "passed",
+          status: "Successful",
           date: getCurrentDate(),
         }));
         handlePageChange("Receipt");
@@ -411,22 +418,36 @@ const Homepage = () => {
     try {
       var result = await Api.post("fundTransfer", {
         atm_id: 1,
-        amount: data.amount,
+        amount: parseInt(data.amount),
         receiver_acc_no: data.ReceiverAccountHolder,
         card_no: data.cardNo,
         pin: screenOutput,
       });
-      // console.log(result.data);
-      let status = result.data.status === 200 ? "Successful" : result.message;
-      let balance = status === "Successful" ? result.data.balance : "";
-      setData((prev) => ({
-        date: getCurrentDate(),
-        transactionID: "ID",
-        transactiontype: data.transactiontype,
-        amount: data.amount,
-        status: status,
-        balance: balance,
-      }));
+      console.log(result.data);
+      let status =
+        result.data.status === 200 ? "Successful" : result.data.message;
+      let balance = status === "Successful" ? result.data.data.balance : "";
+      if (result.data.status === 200) {
+        setData((prev) => ({
+          date: getCurrentDate(),
+          transactionID: result.data.data.transaction_id,
+          transactiontype: data.transactiontype,
+          amount: data.amount,
+          status: status,
+          balance: balance,
+          cardNo: "XXXX XXXX XXXX " + data.cardNo.slice(12, 16),
+        }));
+      } else {
+        setData((prev) => ({
+          date: getCurrentDate(),
+          transactionID: "",
+          transactiontype: data.transactiontype,
+          amount: data.amount,
+          cardNo: "XXXX XXXX XXXX " + data.cardNo.slice(12, 16),
+          status: status,
+          balance: balance,
+        }));
+      }
 
       handlePageChange("Receipt");
     } catch (error) {
@@ -440,7 +461,7 @@ const Homepage = () => {
     try {
       var result = await Api.post("block/verify", {
         email: reportData.email,
-
+        account_no: accountNOReport,
         otp: screenOutput,
       });
       console.log(result.data);
@@ -608,6 +629,8 @@ const Homepage = () => {
         if (screenOutput.length == 6) {
           verifyOTPWithdrawal();
         }
+      } else if (currentPage === "Denominationd") {
+        handlePageChange("InputFieldEnterPin");
       }
     }
   };
@@ -618,7 +641,7 @@ const Homepage = () => {
       var result = await Api.post("fundTransfer/acc_name", {
         receiver_acc_no: screenOutput,
       });
-      // console.log(result.data.status);
+      console.log(result.data.status);
       if (result.data.status === 200) {
         setReceiverAccountHolderName(result.data.data);
         setData((prev) => ({
@@ -626,6 +649,8 @@ const Homepage = () => {
           ReceiverAccountHolder: screenOutput, //here it will have receiver account holder name
         }));
         handlePageChange("InputFieldTTtransfer");
+      } else {
+        handlePageChange("Error", "Invalid Account Number");
       }
     } catch (error) {
       console.error(error);
@@ -778,54 +803,6 @@ const Homepage = () => {
             ""
           )}
 
-          {/* {pages.ReceiptFndT ? (
-            <Receipt
-              cardHolderName="Aayushi Amonkar"
-              Date="03/08/2023 11:00"
-              transactionID="1234"
-              CardNo="XXXX XXXX XXXX 5678"
-              type="Fund Transfer"
-              ReceiverAccountHolder="Rasik Raikar"
-              amount={100.0}
-              status="passed"
-              balance={5000.0}
-              handlePageChange={handlePageChange}
-            />
-          ) : (
-            ""
-          )} */}
-
-          {/* {pages.ReceiptDep ? (
-            <Receipt
-              cardHolderName="Aayushi Amonkar"
-              Date="03/08/2023 11:00"
-              transactionID="1234"
-              CardNo="XXXX XXXX XXXX 5678"
-              type="Deposit"
-              amount={100.0}
-              status="passed"
-              balance={5000.0}
-              handlePageChange={handlePageChange}
-            />
-          ) : (
-            ""
-          )} */}
-
-          {/* {pages.ReceiptW ? (
-            <Receipt
-              cardHolderName="Aayushi Amonkar"
-              Date="03/08/2023 11:00"
-              transactionID="1234"
-              CardNo="XXXX XXXX XXXX 5678"
-              type="Withdrawal"
-              amount={100.0}
-              status="passed"
-              balance={5000.0}
-              handlePageChange={handlePageChange}
-            />
-          ) : (
-            ""
-          )} */}
           {pages.Report ? (
             <Report
               screenOutput={screenOutput}
@@ -840,12 +817,16 @@ const Homepage = () => {
           ) : (
             ""
           )}
-          {pages.Thankyou ? <Thankyou /> : ""}
+          {pages.Thankyou ? (
+            <Thankyou handlePageChange={handlePageChange} />
+          ) : (
+            ""
+          )}
         </div>
-
         <Keyboard
           onKeyClick={handleKeyClick}
           handlePageChange={handlePageChange}
+          play={play}
         />
       </div>
     </>

@@ -72,7 +72,6 @@ const Welcome = ({ handlePageChange }) => {
           <img
             src={safetymeasures}
             alt="safety measures"
-            srcset=""
             width="100%"
             height="100%"
           />
