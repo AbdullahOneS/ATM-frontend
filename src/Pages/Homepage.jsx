@@ -221,13 +221,14 @@ const Homepage = () => {
       console.log(result.data);
       if (result.data.status === 200) {
         // console.log(result.data.data.transaction_id);
+
         setData((prev) => ({
           ...prev,
           date: getCurrentDate(),
           transactionID: result.data.data.transaction_id,
           cardNo: "XXXX XXXX XXXX " + result.data.data.card_no.slice(12, 16),
           amount: DepositAmount,
-          status: result.data.data.transaction_status,
+          status: "Successful",
           balance: result.data.data.balance,
 
           // balance: result.data.data.balance,
@@ -385,7 +386,7 @@ const Homepage = () => {
           transactionID: result.data.data.transaction_id,
           cardNo: "XXXX XXXX XXXX " + result.data.data.card_no.slice(12, 16),
           amount: result.data.data.amount,
-          status: result.data.data.transaction_status,
+          status: "Successful",
           balance: result.data.data.balance,
         }));
       } else {
@@ -417,7 +418,7 @@ const Homepage = () => {
       });
       // console.log(result.data);
       let status = result.data.status === 200 ? "Successful" : result.message;
-      let balance = status === "Successful" ? "amount" : "";
+      let balance = status === "Successful" ? result.data.balance : "";
       setData((prev) => ({
         date: getCurrentDate(),
         transactionID: "ID",
