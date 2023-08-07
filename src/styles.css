@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Agdasima&family=Oswald:wght@200&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit&display=swap');
 
 *{
     margin: 0;
@@ -248,4 +249,24 @@ button{
     outline: none;
     border: none;
     margin: 0.5%;
+}
+
+.report-block{
+    min-width: 50%;
+    height: fit-content;
+    background-color: whitesmoke;
+    margin: 3%;
+    padding: 3%;
+    min-height: 60%;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    border-radius: 10px;
+    
+}
+
+ 
+
+.center-block{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

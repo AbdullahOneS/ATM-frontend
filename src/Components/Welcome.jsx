@@ -33,30 +33,33 @@ const Welcome = ({ handlePageChange }) => {
         <div
           style={{
             // border: "2px solid green",
-            marginTop: "20%",
+            marginTop: "13%",
             marginLeft: "10%",
             // backgroundColor: "#0E77BD",
             color: "#0E77BD",
             fontSize: "18pt",
+            textAlign: "center",
           }}
         >
           <h1>Welcome To</h1>
           <h2>ABC Bank</h2>
         </div>
+
         <Button
           type="primary"
           icon={<DownloadOutlined />}
           size="large"
           style={{
             position: "absolute",
-            top: "50%",
-            left: "45%",
+            top: "47%",
+            left: "37%",
             width: "20%",
           }}
           onClick={() => handlePageChange("InsertCard")}
         >
           Insert Card
         </Button>
+
         <div
           style={{
             // border: "1px solid green",
@@ -74,6 +77,20 @@ const Welcome = ({ handlePageChange }) => {
             height="100%"
           />
         </div>
+      </div>
+      <div
+        style={{
+          color: "red",
+          fontSize: "12pt",
+          textDecoration: "underline",
+          position: "absolute",
+          top: "57%",
+          left: "43%",
+          cursor: "pointer",
+        }}
+        onClick={() => handlePageChange("Report")}
+      >
+        Block the card
       </div>
       {/* // </div> */}
     </>

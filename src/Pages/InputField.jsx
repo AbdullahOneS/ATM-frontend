@@ -6,7 +6,6 @@ import Api from "../Api";
 
 const InputField = ({
   message,
-  Transactiontype,
   handlePageChange,
   // setWithdrawalAmt,
   withdrawalAmt,
@@ -25,6 +24,9 @@ const InputField = ({
   setTranferAmt,
   transferAmt,
   depositAmount,
+  otp,
+  resendlink,
+  verifyOTPWithdrawal,
 }) => {
   const [inputValue, setInputValue] = useState("");
   let page = "";
@@ -77,20 +79,26 @@ const InputField = ({
     page = "InputFieldEnterAmount";
     buttonText = "Proceed";
   } else {
-    input = <PasswordField message="otp" />;
-    page = "ReceiptW";
+    input = <PasswordField message="otp" pin={otp} />;
+    page = "DenominationW";
     buttonText = "Verify";
     resendotpLink = (
-      <div
+      <button
         style={{
           textAlign: "center",
           width: "100%",
           textDecoration: "underline",
           color: "purple",
+          cursor: "pointer",
+          backgroundColor: "#76C0DB",
+          outline: "none",
+          border: "none",
+          marginTop: "20px",
         }}
+        onClick={() => resendlink()}
       >
         <a>Resend OTP</a>
-      </div>
+      </button>
     );
     otpmessage = (
       <div style={{ textAlign: "center", marginBottom: "8%", color: "white" }}>
@@ -200,6 +208,7 @@ const InputField = ({
                     transactionType === "withdrawal"
                   ) {
                     // handlePageChange(page);
+
                     AmountCheck();
                   }
                   if (
@@ -207,6 +216,9 @@ const InputField = ({
                     transactionType === "deposit"
                   ) {
                     depositAmount();
+                  }
+                  if (message === "Enter OTP") {
+                    verifyOTPWithdrawal();
                   }
                 }}
               >

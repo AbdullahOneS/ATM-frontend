@@ -29,7 +29,7 @@ const ReceiptTemplate = ({
         }}
       >
         {/* {type} */}
-        
+
         <div style={{ display: "flex", alignItems: "center" }}>
           ...............................................................................
         </div>
@@ -74,7 +74,7 @@ const ReceiptTemplate = ({
           </div>
         ) : (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ textAlign: "left" }}>Transaction : </span>
+            <span style={{ textAlign: "left" }}>Transaction ID: </span>
 
             <span style={{ textAlign: "right" }}>{transactionID}</span>
           </div>
@@ -116,19 +116,23 @@ const ReceiptTemplate = ({
           <span style={{ textAlign: "left" }}>Transaction {status}</span>
         </div>
 
-        <div
-          style={{
-            display: "flex",
+        {balance === "" ? (
+          ""
+        ) : (
+          <div
+            style={{
+              display: "flex",
 
-            justifyContent: "space-between",
+              justifyContent: "space-between",
 
-            marginTop: "7%",
-          }}
-        >
-          <span style={{ textAlign: "left" }}>Account Balance</span>
+              marginTop: "7%",
+            }}
+          >
+            <span style={{ textAlign: "left" }}>Account Balance</span>
 
-          <span style={{ textAlign: "right" }}>{balance}</span>
-        </div>
+            <span style={{ textAlign: "right" }}>{balance}</span>
+          </div>
+        )}
 
         <div
           style={{

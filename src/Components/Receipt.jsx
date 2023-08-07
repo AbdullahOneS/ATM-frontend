@@ -92,7 +92,7 @@ export default class Export extends Component {
             <Button
               className="OptionButton"
               style={{ outline: "none", border: "none", marginTop: "10%" }}
-              onClick={() => handlePageChange("Welcome")}
+              onClick={() => handlePageChange("Thankyou")}
             >
               Continue
             </Button>

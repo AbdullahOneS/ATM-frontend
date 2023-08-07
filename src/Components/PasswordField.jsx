@@ -36,6 +36,7 @@ const PasswordField = ({ message, setInputValue, pin }) => {
   //     event.preventDefault();
   //   }
   // };
+  
   let pinStar = "";
   for (let i = 0; i < pin.length; i++) {
     pinStar += "*   ";

@@ -11,6 +11,8 @@ import Receipt from "../Components/Receipt";
 import Keyboard from "../Components/Keyboard";
 import Api from "../Api";
 import Denominationdepo from "./Denominationdepo";
+import Report from "../Components/Report";
+import Thankyou from "../Components/Thankyou";
 
 const Homepage = () => {
   const getCurrentDate = () => {
@@ -22,10 +24,8 @@ const Homepage = () => {
     const year = now.getFullYear();
     const hours = String(now.getHours()).padStart(2, "0");
     const minutes = String(now.getMinutes()).padStart(2, "0");
-
     // Combine the parts to form the desired format
     const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
-
     return formattedDate;
   };
 
@@ -42,7 +42,7 @@ const Homepage = () => {
   const [cardNo, setCardNo] = useState("");
   const [errormsg, setErrorMsg] = useState("");
   const [cardHolder, setCardHolder] = useState("");
-
+  const [reportType, setReportType] = useState(14);
   const [DepositAmount, setDepositAmount] = useState(0);
   const [depoDenominations, setDepoDenominations] = useState({
     n_100: 0,
@@ -50,21 +50,8 @@ const Homepage = () => {
     n_500: 0,
     n_2000: 0,
   });
-
-  useEffect(() => {
-    setDepoDenominations({
-      n_100: 0,
-      n_200: 0,
-      n_500: 0,
-      n_2000: 0,
-    });
-  }, []);
-
   const [receiverAccountHolderName, setReceiverAccountHolderName] =
     useState("");
-
-  // console.log(denominations);
-
   const [pages, setPages] = useState({
     Welcome: true,
     InsertCard: false,
@@ -80,12 +67,18 @@ const Homepage = () => {
     InputFieldEnterAccNo: false,
     Error: false,
     Receipt: false,
-    // ReceiptFndT: false,
-    // ReceiptDep: false,
-    // ReceiptW: false,
+    Report: false,
+    Thankyou: false,
   });
 
   const [screenOutput, setScreenOutput] = useState("");
+  const [reportData, setReportData] = useState({
+    AccountHolderName: "",
+    email: "",
+    buttonText: "Proceed",
+    errorMsg: "",
+    status: "pending",
+  });
   const [data, setData] = useState({
     cardHolder: "",
     date: "",
@@ -100,6 +93,54 @@ const Homepage = () => {
   });
   const [atmDenominations, setAtmDenominations] = useState({});
 
+  const GetAccountHolder = async () => {
+    // console.log("GetAccountHolder");
+    if (screenOutput.length === 14) {
+      try {
+        var result = await Api.post("fundTransfer/acc_name", {
+          receiver_acc_no: screenOutput,
+        });
+        // console.log(result.data.status);
+        if (result.data.status === 200) {
+          setReportData((prev) => ({
+            ...prev,
+            account_no: screenOutput,
+            AccountHolderName: result.data.data,
+            buttonText: "Send OTP",
+          }));
+          console.log(reportData.AccountHolderName);
+        } else {
+          handlePageChange("Error", "Invalid Account Number!");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const sendOTP = async () => {
+    try {
+      var result = await Api.post("otp/send", {
+        account_no: reportData.account_no,
+      });
+      // console.log(result.data.status);
+      if (result.data.status === 200) {
+        setReportData((prev) => ({
+          ...prev,
+          email: result.data.email,
+          buttonText: "Verify",
+          errorMsg: "OTP sent successfully",
+        }));
+        setReportType(6);
+        setScreenOutput("");
+      } else {
+        setErrorMsg("OTP cannot be sent..Try Again");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handlePageChange = (pageKey, message, type) => {
     // if (message == "success") {
     if (type) {
@@ -108,11 +149,23 @@ const Homepage = () => {
         transactiontype: type,
       }));
     }
+    if (pageKey === "Welcome") {
+      setDepositAmount(0);
+      setDepoDenominations({ n_100: 0, n_200: 0, n_500: 0, n_2000: 0 });
+    }
     // }
     // setData(cardDetails);
     setScreenOutput("");
+    setReportType(14);
     setErrorMsg(message);
     setCurrentPage(pageKey);
+    setReportData({
+      AccountHolderName: "",
+      email: "",
+      buttonText: "Proceed",
+      errorMsg: "",
+      status: "pending",
+    });
     setPages((prevPages) => {
       const updatedPages = { ...prevPages };
       for (const key in updatedPages) {
@@ -161,6 +214,7 @@ const Homepage = () => {
       const result = await Api.post("deposit/add", {
         card_no: data.cardNo,
         pin: screenOutput,
+        amount: DepositAmount,
         denomination: depoDenominations,
         atm_id: 1,
       });
@@ -174,6 +228,8 @@ const Homepage = () => {
           cardNo: "XXXX XXXX XXXX " + result.data.data.card_no.slice(12, 16),
           amount: DepositAmount,
           status: result.data.data.transaction_status,
+          balance: result.data.data.balance,
+
           // balance: result.data.data.balance,
         }));
       } else {
@@ -184,6 +240,7 @@ const Homepage = () => {
           cardNo: "XXXX XXXX XXXX " + data.cardNo.slice(12, 16),
           amount: data.amount,
           status: result.data.message,
+          balance: "",
         }));
       }
       handlePageChange("Receipt");
@@ -192,6 +249,43 @@ const Homepage = () => {
     }
   };
 
+  const sendOTPWithdraw = async () => {
+    // console.log(data.cardNo);
+
+    try {
+      var result = await Api.post("otp/send", {
+        card_no: data.cardNo,
+      });
+      console.log(result.data);
+      if (result.data.status === 200) {
+        // setEmail(result.data.email)
+        handlePageChange("InputFieldEnterOTP");
+      } else {
+        // handlePageChange("Error", result.data.message);
+        handlePageChange("InputFieldEnterOTP");
+      }
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  const verifyOTPWithdrawal = async () => {
+    console.log("verifyotp");
+    try {
+      var result = await Api.post("otp/verify", {
+        email: reportData.email, //!important change email
+        otp: screenOutput,
+      });
+      console.log(result.data);
+      if (result.data.status === 200) {
+        handlePageChange("DenominationW");
+      } else {
+        handlePageChange("Error", "Wrong OTP");
+      }
+    } catch (error) {
+      console.error();
+    }
+  };
   const balanceCheck = async () => {
     // console.log("i m balance check");
     try {
@@ -256,9 +350,12 @@ const Homepage = () => {
             ...prev,
             amount: screenOutput,
           }));
-          console.log(min_note);
-
-          handlePageChange("Denominationw");
+          if (Number(screenOutput) > Number("10000")) {
+            // console.log(screenOutput);
+            sendOTPWithdraw();
+          } else {
+            handlePageChange("Denominationw");
+          }
         } else {
           handlePageChange("Error", "No Cash to Dispence");
         }
@@ -299,6 +396,7 @@ const Homepage = () => {
           cardNo: "XXXX XXXX XXXX " + data.cardNo.slice(12, 16),
           amount: data.amount,
           status: result.data.message,
+          balance: "",
         }));
       }
       handlePageChange("Receipt");
@@ -319,13 +417,14 @@ const Homepage = () => {
       });
       // console.log(result.data);
       let status = result.data.status === 200 ? "Successful" : result.message;
+      let balance = status === "Successful" ? "amount" : "";
       setData((prev) => ({
         date: getCurrentDate(),
         transactionID: "ID",
         transactiontype: data.transactiontype,
         amount: data.amount,
         status: status,
-        balance: 100,
+        balance: balance,
       }));
 
       handlePageChange("Receipt");
@@ -334,6 +433,33 @@ const Homepage = () => {
     }
   };
 
+  const verifyOTP = async () => {
+    console.log("i verify otp");
+
+    try {
+      var result = await Api.post("block/verify", {
+        email: reportData.email,
+
+        otp: screenOutput,
+      });
+      console.log(result.data);
+      if (result.data.status === 200) {
+        setReportData((prev) => ({
+          ...prev,
+          buttonText: "Continue",
+          status: "successful",
+        }));
+      } else {
+        setReportData((prev) => ({
+          ...prev,
+          buttonText: "Try Again",
+          status: "failed",
+        }));
+      }
+    } catch (error) {
+      console.error();
+    }
+  };
   const setTranferAmt = () => {
     setData((prev) => ({
       ...prev,
@@ -374,6 +500,14 @@ const Homepage = () => {
         }
       } else if (currentPage === "InputFieldTTtransfer") {
         setScreenOutput((prev) => prev + key);
+      } else if (currentPage === "Report") {
+        if (screenOutput.length < reportType) {
+          setScreenOutput((prev) => prev + key);
+        }
+      } else if (currentPage === "InputFieldEnterOTP") {
+        if (screenOutput.length < 6) {
+          setScreenOutput((prev) => prev + key);
+        }
       }
     } else if (key === "CLEAR") {
       setScreenOutput("");
@@ -457,6 +591,22 @@ const Homepage = () => {
         if (screenOutput.length === 4) {
           depositAmount();
         }
+      } else if (currentPage === "Report") {
+        if (reportData.buttonText === "Proceed") {
+          if (screenOutput.length === 14) {
+            GetAccountHolder();
+          }
+        } else if (reportData.buttonText === "Send OTP") {
+          sendOTP();
+        } else {
+          if (screenOutput.length === 6) {
+            verifyOTP();
+          }
+        }
+      } else if (currentPage === "InputFieldEnterOTP") {
+        if (screenOutput.length == 6) {
+          verifyOTPWithdrawal();
+        }
       }
     }
   };
@@ -485,18 +635,9 @@ const Homepage = () => {
 
   return (
     <>
-      {/* {currentPage} */}
+      {/* {reportData.balance} */}
       <div className="home">
         <div id="output-screen">
-          {/* {data.transactiontype} */}
-          {/* {currentComponent === "" ? (
-            <Welcome handleChange={handleChange} />
-          ) : (
-            currentComponent
-          )} */}
-          {/* {currentPage}
-          {screenOutput} */}
-          {/* {data.transactiontype} */}
           {pages.Welcome ? <Welcome handlePageChange={handlePageChange} /> : ""}
           {pages.InsertCard ? (
             <InsertCard
@@ -532,7 +673,6 @@ const Homepage = () => {
 
           {pages.Denominationw ? (
             <Denomination
-              amount="2000"
               page="withdrawal"
               handlePageChange={handlePageChange}
               setDenominations={setDenominations}
@@ -544,7 +684,6 @@ const Homepage = () => {
           )}
           {pages.Denominationd ? (
             <Denominationdepo
-              amount="2000"
               page="deposit"
               handlePageChange={handlePageChange}
               DepositAmount={DepositAmount}
@@ -574,6 +713,7 @@ const Homepage = () => {
               Amount={screenOutput}
               // setWithdrawalAmt={setWithdrawalAmt}
               AmountCheck={AmountCheck}
+              transactionType="withdrawal"
             />
           ) : (
             ""
@@ -596,6 +736,9 @@ const Homepage = () => {
             <InputField
               message="Enter OTP"
               handlePageChange={handlePageChange}
+              otp={screenOutput}
+              resendlink={sendOTPWithdraw}
+              verifyOTPWithdrawal={verifyOTPWithdrawal}
             />
           ) : (
             ""
@@ -682,8 +825,27 @@ const Homepage = () => {
           ) : (
             ""
           )} */}
+          {pages.Report ? (
+            <Report
+              screenOutput={screenOutput}
+              handlePageChange={handlePageChange}
+              reportType={reportType}
+              reportData={reportData}
+              setReportData={setReportData}
+              GetAccountHolder={GetAccountHolder}
+              sendOTP={sendOTP}
+              verifyOTP={verifyOTP}
+            />
+          ) : (
+            ""
+          )}
+          {pages.Thankyou ? <Thankyou /> : ""}
         </div>
-        <Keyboard onKeyClick={handleKeyClick} />
+
+        <Keyboard
+          onKeyClick={handleKeyClick}
+          handlePageChange={handlePageChange}
+        />
       </div>
     </>
   );
