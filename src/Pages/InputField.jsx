@@ -174,7 +174,7 @@ const InputField = ({
                   message === "Enter Pin"
                     ? pin.length < 4
                     : message === "Enter OTP"
-                    ? pin.length < 6
+                    ? otp.length < 6
                     : message === "Enter Account Number"
                     ? accountNo.length < 14
                     : Amount.length < 0

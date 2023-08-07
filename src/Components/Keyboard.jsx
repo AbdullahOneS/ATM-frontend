@@ -4,7 +4,7 @@ import Keys from "./Keys";
 
 import "../styles.css";
 
-const Keyboard = ({ onKeyClick, handlePageChange, play }) => {
+const Keyboard = ({ onKeyClick, handlePageChange, play, timerId }) => {
   return (
     <>
       <div id="keypad">
@@ -44,6 +44,7 @@ const Keyboard = ({ onKeyClick, handlePageChange, play }) => {
               className="btn"
               onClick={() => {
                 play();
+                clearTimeout(timerId);
                 onKeyClick("CANCEL");
               }}
             >

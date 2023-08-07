@@ -18,6 +18,7 @@ import useSound from "use-sound";
 
 const Homepage = () => {
   const [play] = useSound(beep);
+  const [timerId, setTimerId] = useState(null);
 
   //to get current day time
   const getCurrentDate = () => {
@@ -49,6 +50,7 @@ const Homepage = () => {
   const [cardHolder, setCardHolder] = useState("");
   const [reportType, setReportType] = useState(14);
   const [DepositAmount, setDepositAmount] = useState(0);
+  const [emailOTP, setEmailOTP] = useState("");
   const [depoDenominations, setDepoDenominations] = useState({
     n_100: 0,
     n_200: 0,
@@ -147,8 +149,9 @@ const Homepage = () => {
     }
   };
 
-  const handlePageChange = (pageKey, message, type) => {
+  const handlePageChange = async (pageKey, message, type) => {
     play();
+    console.log(pageKey, type);
     // if (message == "success") {
     if (type) {
       setData((prev) => ({
@@ -156,8 +159,10 @@ const Homepage = () => {
         transactiontype: type,
       }));
     }
+
     if (pageKey === "Welcome") {
       setDepositAmount(0);
+      setEmailOTP("");
       setDepoDenominations({ n_100: 0, n_200: 0, n_500: 0, n_2000: 0 });
     }
     // }
@@ -173,6 +178,22 @@ const Homepage = () => {
       errorMsg: "",
       status: "pending",
     });
+    if (pageKey === "InputFieldEnterAmount" && type === "withdrawal") {
+      console.log("hoi");
+      try {
+        var result = await Api.post("withdrawal/denomination", {
+          atm_id: 1,
+        });
+        console.log(result.data);
+        if (result.data.status === 200) {
+          setAtmDenominations(result.data.data);
+        } else {
+          handlePageChange("Error", result.message);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
     setPages((prevPages) => {
       const updatedPages = { ...prevPages };
       for (const key in updatedPages) {
@@ -266,6 +287,7 @@ const Homepage = () => {
       });
       console.log(result.data);
       if (result.data.status === 200) {
+        setEmailOTP(result.data.email);
         // setEmail(result.data.email)
         handlePageChange("InputFieldEnterOTP");
       } else {
@@ -280,13 +302,14 @@ const Homepage = () => {
   const verifyOTPWithdrawal = async () => {
     console.log("verifyotp");
     try {
+      console.log(reportData.email, screenOutput);
       var result = await Api.post("otp/verify", {
-        email: reportData.email, //!important change email
+        email: emailOTP, //!important change email
         otp: screenOutput,
       });
       console.log(result.data);
       if (result.data.status === 200) {
-        handlePageChange("DenominationW");
+        handlePageChange("Denominationw");
       } else {
         handlePageChange("Error", "Wrong OTP");
       }
@@ -324,55 +347,55 @@ const Homepage = () => {
     }
   };
 
-  const AmountCheck = async () => {
+  const AmountCheck = () => {
     console.log("i m amt check");
-    try {
-      var result = await Api.post("withdrawal/denomination", {
-        atm_id: 1,
-      });
-      if (result.data.status === 200) {
-        setAtmDenominations(result.data.data);
-        // console.log(result.data.data);
-        //find which is lowest denomination in atm
-        // console.log(atmDenominations);
-        let min_note = 100;
-        if (atmDenominations.n_100 > 0) {
-          min_note = 100;
-        } else if (atmDenominations.n_200 > 0) {
-          min_note = 200;
-        } else if (atmDenominations.n_500 > 0) {
-          min_note = 500;
-        } else if (atmDenominations.n_2000 > 0) {
-          min_note = 2000;
+    // try {
+    //   var result = await Api.post("withdrawal/denomination", {
+    //     atm_id: 1,
+    //   });
+    //   if (result.data.status === 200) {
+    //     setAtmDenominations(result.data.data);
+    // console.log(result.data.data);
+    //find which is lowest denomination in atm
+    // console.log(atmDenominations);
+    let min_note = 100;
+    if (Object.keys(atmDenominations).length != 0) {
+      if (atmDenominations.n_100 > 0) {
+        min_note = 100;
+      } else if (atmDenominations.n_200 > 0) {
+        min_note = 200;
+      } else if (atmDenominations.n_500 > 0) {
+        min_note = 500;
+      } else if (atmDenominations.n_2000 > 0) {
+        min_note = 2000;
+      } else {
+        // handlePageChange("Error", "No Cash to Dispence");
+      }
+      let totalAtmAmt =
+        atmDenominations.n_100 * 100 +
+        atmDenominations.n_200 * 200 +
+        atmDenominations.n_500 * 500 +
+        atmDenominations.n_2000 * 2000;
+      // console.log(atmDenominations);
+      if (totalAtmAmt > screenOutput && screenOutput % min_note === 0) {
+        setData((prev) => ({
+          ...prev,
+          amount: screenOutput,
+        }));
+        if (Number(screenOutput) > Number("10000")) {
+          // console.log(screenOutput);
+          sendOTPWithdraw();
         } else {
-          // handlePageChange("Error", "No Cash to Dispence");
-        }
-        let totalAtmAmt =
-          atmDenominations.n_100 * 100 +
-          atmDenominations.n_200 * 200 +
-          atmDenominations.n_500 * 500 +
-          atmDenominations.n_2000 * 2000;
-        // console.log(atmDenominations);
-        if (totalAtmAmt > screenOutput && screenOutput % min_note === 0) {
-          setData((prev) => ({
-            ...prev,
-            amount: screenOutput,
-          }));
-          if (Number(screenOutput) > Number("10000")) {
-            // console.log(screenOutput);
-            sendOTPWithdraw();
-          } else {
-            handlePageChange("Denominationw");
-          }
-        } else {
-          handlePageChange("Error", "No Cash to Dispence");
+          handlePageChange("Denominationw");
         }
       } else {
-        handlePageChange("Error", result.message);
+        handlePageChange("Error", "No Cash to Dispense");
       }
-    } catch (error) {
-      console.error();
     }
+
+    // } catch (error) {
+    //   console.error();
+    // }
   };
 
   const Withdrawal = async () => {
@@ -661,7 +684,8 @@ const Homepage = () => {
 
   return (
     <>
-      {/* {reportData.balance} */}
+      {/* {currentPage}
+      {data.transactiontype} */}
       <div className="home">
         <div id="output-screen">
           {pages.Welcome ? <Welcome handlePageChange={handlePageChange} /> : ""}
@@ -780,7 +804,12 @@ const Homepage = () => {
             ""
           )}
           {pages.Error ? (
-            <Error message={errormsg} handlePageChange={handlePageChange} />
+            <Error
+              message={errormsg}
+              handlePageChange={handlePageChange}
+              timerId={timerId}
+              setTimerId={setTimerId}
+            />
           ) : (
             ""
           )}
@@ -818,7 +847,11 @@ const Homepage = () => {
             ""
           )}
           {pages.Thankyou ? (
-            <Thankyou handlePageChange={handlePageChange} />
+            <Thankyou
+              handlePageChange={handlePageChange}
+              timerId={timerId}
+              setTimerId={setTimerId}
+            />
           ) : (
             ""
           )}
@@ -827,6 +860,7 @@ const Homepage = () => {
           onKeyClick={handleKeyClick}
           handlePageChange={handlePageChange}
           play={play}
+          timerId={timerId}
         />
       </div>
     </>

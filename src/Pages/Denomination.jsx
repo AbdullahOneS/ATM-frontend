@@ -49,7 +49,7 @@ const Denomination = ({
       suggDenominations.n_2000 * 2000;
     if (value === 100) {
       //atm has no more 100 notes cant increment
-      if (suggDenominations.n_100 <= atmDenominations.n_100) {
+      if (suggDenominations.n_100 < atmDenominations.n_100) {
         //withdrawal amt is less
         if (suggDenominations.n_100 + 1 <= Math.floor(withdrawalAmt / value)) {
           if (100 + totalAmount > parseInt(withdrawalAmt)) {
@@ -69,7 +69,7 @@ const Denomination = ({
         setMessage(`No cash to dispense.`);
       }
     } else if (value === 200) {
-      if (suggDenominations.n_200 <= atmDenominations.n_200) {
+      if (suggDenominations.n_200 < atmDenominations.n_200) {
         if (suggDenominations.n_200 + 1 <= Math.floor(withdrawalAmt / value)) {
           if (200 + totalAmount > parseInt(withdrawalAmt)) {
             setMessage("Withdrawal amount limit exceed");
@@ -88,7 +88,7 @@ const Denomination = ({
         setMessage(`No cash to dispense.`);
       }
     } else if (value === 500) {
-      if (suggDenominations.n_500 <= atmDenominations.n_500) {
+      if (suggDenominations.n_500 < atmDenominations.n_500) {
         if (suggDenominations.n_500 + 1 <= Math.floor(withdrawalAmt / value)) {
           if (500 + totalAmount > parseInt(withdrawalAmt)) {
             setMessage("Withdrawal amount limit exceed");
@@ -107,7 +107,7 @@ const Denomination = ({
         setMessage(`No cash to dispense.`);
       }
     } else if (value === 2000) {
-      if (suggDenominations.n_2000 <= atmDenominations.n_2000) {
+      if (suggDenominations.n_2000 < atmDenominations.n_2000) {
         if (suggDenominations.n_2000 + 1 <= Math.floor(withdrawalAmt / value)) {
           if (2000 + totalAmount > parseInt(withdrawalAmt)) {
             setMessage("Withdrawal amount limit exceed");

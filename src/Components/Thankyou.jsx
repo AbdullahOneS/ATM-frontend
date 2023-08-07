@@ -1,10 +1,24 @@
 import React, { useEffect } from "react";
 
-const Thankyou = ({ handlePageChange }) => {
+const Thankyou = ({ handlePageChange ,timerId,setTimerId}) => {
+  function myFunction() {
+    handlePageChange("Welcome");
+  }
+
+  // Set the timeout when the component mounts
+
   useEffect(() => {
-    setTimeout(() => {
-      handlePageChange("Welcome");
-    }, 5000);
+    const id = setTimeout(myFunction, 5000);
+
+    setTimerId(id);
+
+    // Clear the timer when the component unmounts
+
+    return () => {
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+    };
   }, []);
 
   return (
