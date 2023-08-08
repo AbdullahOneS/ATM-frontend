@@ -126,6 +126,10 @@ const Homepage = () => {
   };
 
   const sendOTP = async () => {
+    setReportData((prev) => ({
+      ...prev,
+      buttonText: "OTP sent...",
+    }));
     try {
       var result = await Api.post("otp/send", {
         account_no: reportData.account_no,
@@ -143,6 +147,10 @@ const Homepage = () => {
         setScreenOutput("");
       } else {
         setErrorMsg("OTP cannot be sent..Try Again");
+        setReportData((prev) => ({
+          ...prev,
+          buttonText: "Resend OTP",
+        }));
       }
     } catch (error) {
       console.error(error);
@@ -349,6 +357,7 @@ const Homepage = () => {
 
   const AmountCheck = async () => {
     console.log("i m amt check");
+    // setLoading(1);
     try {
       var result = await Api.post("transaction-quota", {
         card_no: data.cardNo,
@@ -396,6 +405,7 @@ const Homepage = () => {
     } catch (error) {
       console.error(error);
     }
+    // setLoading(0);
   };
 
   const Withdrawal = async () => {
@@ -597,6 +607,10 @@ const Homepage = () => {
         if (screenOutput.length === 16) {
           cardVerify();
         }
+      } else if (currentPage === "Denominationd") {
+        if (DepositAmount !== 0) {
+          handlePageChange("InputFieldEnterPin");
+        }
       } else if (
         currentPage === "InputFieldEnterPin" &&
         data.transactiontype === "withdrawal"
@@ -654,6 +668,10 @@ const Homepage = () => {
         }
       } else if (currentPage === "Denominationd") {
         handlePageChange("InputFieldEnterPin");
+      } else if (currentPage === "InputFieldEnterAccNo") {
+        if (screenOutput.length === 14) {
+          CheckReceiverAcc();
+        }
       }
     }
   };

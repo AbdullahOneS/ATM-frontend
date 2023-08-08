@@ -121,12 +121,18 @@ const Report = ({
                   type="primary"
                   //   className="center-block"
                   htmlType="submit"
-                  disabled={screenOutput.length < reportType}
+                  disabled={
+                    screenOutput.length < reportType ||
+                    reportData.buttonText === "OTP sent..."
+                  }
                   style={{ marginTop: "20px" }}
                   onClick={() => {
                     if (reportData.AccountHolderName === "") {
                       GetAccountHolder();
-                    } else if (reportData.buttonText === "Send OTP") {
+                    } else if (
+                      reportData.buttonText === "Send OTP" ||
+                      reportData.buttonText === "Resend OTP"
+                    ) {
                       // setScreenOutput("");
                       sendOTP();
                     } else if (

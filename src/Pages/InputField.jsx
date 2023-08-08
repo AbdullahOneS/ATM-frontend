@@ -36,6 +36,7 @@ const InputField = ({
   let otpmessage = "";
   let AccountHolderName = "";
   let transferBlock = "";
+  // let loading = 0;
   if (transactionType === "transfer") {
     // AccountHolderName = {ReceiverAccountHolder};
     transferBlock = (
@@ -235,27 +236,14 @@ const InputField = ({
                     depositAmount();
                   }
                   if (message === "Enter OTP") {
-                    verifyOTPWithdrawal();
+                    if (otp.length === 6) {
+                      verifyOTPWithdrawal();
+                    }
                   }
                 }}
               >
                 {buttonText}
               </Button>
-              {/* <Button
-                style={{
-                  backgroundColor: "#0E77BD",
-                  width: "100px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "40px",
-                  color: "white",
-                  borderRadius: "5px",
-                }}
-                onClick={()=>}
-              >
-                clear
-              </Button> */}
             </div>
           </div>
         </div>

@@ -25,7 +25,6 @@ const Welcome = ({ handlePageChange }) => {
         style={{
           // padding: "10%",
           fontFamily: "Arvo, serif",
-          // border: "2px solid red",
           width: "100%",
           // position: "relative",
         }}
@@ -33,32 +32,49 @@ const Welcome = ({ handlePageChange }) => {
         <div
           style={{
             // border: "2px solid green",
+            height: "45%",
             marginTop: "13%",
-            marginLeft: "10%",
+            // marginLeft: "10%",
             // backgroundColor: "#0E77BD",
             color: "#0E77BD",
-            fontSize: "18pt",
+            fontSize: "20pt",
             textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <h1>Welcome To</h1>
-          <h2>ABC Bank</h2>
-        </div>
+          <div>
+            <h1>Welcome to</h1>
+            <h2>ABC Bank</h2>
+          </div>
+          <div>
+            <Button
+              type="primary"
+              icon={<DownloadOutlined />}
+              size="large"
+              style={{ width: "250px" }}
+              onClick={() => handlePageChange("InsertCard")}
+            >
+              Insert Card
+            </Button>
 
-        <Button
-          type="primary"
-          icon={<DownloadOutlined />}
-          size="large"
-          style={{
-            position: "absolute",
-            top: "47%",
-            left: "37%",
-            width: "20%",
-          }}
-          onClick={() => handlePageChange("InsertCard")}
-        >
-          Insert Card
-        </Button>
+            <div
+              style={{
+                color: "red",
+                fontSize: "10pt",
+                textDecoration: "underline",
+                marginTop: "13px",
+                cursor: "pointer",
+                fontFamily: "Arial",
+              }}
+              onClick={() => handlePageChange("Report")}
+            >
+              Block the card
+            </div>
+          </div>
+        </div>
 
         <div
           style={{
@@ -77,20 +93,7 @@ const Welcome = ({ handlePageChange }) => {
           />
         </div>
       </div>
-      <div
-        style={{
-          color: "red",
-          fontSize: "12pt",
-          textDecoration: "underline",
-          position: "absolute",
-          top: "57%",
-          left: "43%",
-          cursor: "pointer",
-        }}
-        onClick={() => handlePageChange("Report")}
-      >
-        Block the card
-      </div>
+
       {/* // </div> */}
     </>
   );
