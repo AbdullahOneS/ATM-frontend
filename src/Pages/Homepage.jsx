@@ -347,55 +347,55 @@ const Homepage = () => {
     }
   };
 
-  const AmountCheck = () => {
+  const AmountCheck = async () => {
     console.log("i m amt check");
-    // try {
-    //   var result = await Api.post("withdrawal/denomination", {
-    //     atm_id: 1,
-    //   });
-    //   if (result.data.status === 200) {
-    //     setAtmDenominations(result.data.data);
-    // console.log(result.data.data);
-    //find which is lowest denomination in atm
-    // console.log(atmDenominations);
-    let min_note = 100;
-    if (Object.keys(atmDenominations).length != 0) {
-      if (atmDenominations.n_100 > 0) {
-        min_note = 100;
-      } else if (atmDenominations.n_200 > 0) {
-        min_note = 200;
-      } else if (atmDenominations.n_500 > 0) {
-        min_note = 500;
-      } else if (atmDenominations.n_2000 > 0) {
-        min_note = 2000;
-      } else {
-        // handlePageChange("Error", "No Cash to Dispence");
-      }
-      let totalAtmAmt =
-        atmDenominations.n_100 * 100 +
-        atmDenominations.n_200 * 200 +
-        atmDenominations.n_500 * 500 +
-        atmDenominations.n_2000 * 2000;
-      // console.log(atmDenominations);
-      if (totalAtmAmt > screenOutput && screenOutput % min_note === 0) {
-        setData((prev) => ({
-          ...prev,
-          amount: screenOutput,
-        }));
-        if (Number(screenOutput) > Number("10000")) {
-          // console.log(screenOutput);
-          sendOTPWithdraw();
-        } else {
-          handlePageChange("Denominationw");
+    try {
+      var result = await Api.post("transaction-quota", {
+        card_no: data.cardNo,
+        amount: screenOutput,
+      });
+      console.log(result.data);
+      if (result.data.status === 200) {
+        let min_note = 100;
+        if (Object.keys(atmDenominations).length != 0) {
+          if (atmDenominations.n_100 > 0) {
+            min_note = 100;
+          } else if (atmDenominations.n_200 > 0) {
+            min_note = 200;
+          } else if (atmDenominations.n_500 > 0) {
+            min_note = 500;
+          } else if (atmDenominations.n_2000 > 0) {
+            min_note = 2000;
+          } else {
+            handlePageChange("Error", "No Cash to Dispence");
+          }
+          let totalAtmAmt =
+            atmDenominations.n_100 * 100 +
+            atmDenominations.n_200 * 200 +
+            atmDenominations.n_500 * 500 +
+            atmDenominations.n_2000 * 2000;
+          // console.log(atmDenominations);
+          if (totalAtmAmt > screenOutput && screenOutput % min_note === 0) {
+            setData((prev) => ({
+              ...prev,
+              amount: screenOutput,
+            }));
+            if (Number(screenOutput) > Number("10000")) {
+              // console.log(screenOutput);
+              sendOTPWithdraw();
+            } else {
+              handlePageChange("Denominationw");
+            }
+          } else {
+            handlePageChange("Error", "No Cash to Dispense");
+          }
         }
       } else {
-        handlePageChange("Error", "No Cash to Dispense");
+        handlePageChange("Error", result.data.message);
       }
+    } catch (error) {
+      console.error(error);
     }
-
-    // } catch (error) {
-    //   console.error();
-    // }
   };
 
   const Withdrawal = async () => {
