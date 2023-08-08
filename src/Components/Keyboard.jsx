@@ -161,7 +161,7 @@ const Keyboard = ({ onKeyClick, handlePageChange, play, timerId }) => {
             </button>
 
             <button className="btn">
-              <Keys num={"."} marginright={"6%"} />
+              <Keys num={""} marginright={"6%"} />
             </button>
 
             <button

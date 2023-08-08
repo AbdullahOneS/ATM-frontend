@@ -15,9 +15,11 @@ import Report from "../Components/Report";
 import Thankyou from "../Components/Thankyou";
 import beep from "../Sound/atmbeep.mp3";
 import useSound from "use-sound";
+import cashDispense from "../Sound/cashDispense.mp3";
 
 const Homepage = () => {
   const [play] = useSound(beep);
+  const [cashdispense] = useSound(cashDispense);
   const [timerId, setTimerId] = useState(null);
 
   //to get current day time
@@ -442,6 +444,10 @@ const Homepage = () => {
           status: "Successful",
           balance: result.data.data.balance,
         }));
+        cashdispense();
+        setTimeout(() => {
+          handlePageChange("Receipt");
+        }, 4000);
       } else {
         setData((prev) => ({
           ...prev,
@@ -452,8 +458,8 @@ const Homepage = () => {
           status: result.data.message,
           balance: "",
         }));
+        handlePageChange("Receipt");
       }
-      handlePageChange("Receipt");
     } catch (error) {
       console.error();
     }
