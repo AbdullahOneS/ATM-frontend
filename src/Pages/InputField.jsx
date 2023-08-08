@@ -27,6 +27,9 @@ const InputField = ({
   otp,
   resendlink,
   verifyOTPWithdrawal,
+  disable,
+  errormessage,
+  setErrorMessage,
 }) => {
   const [inputValue, setInputValue] = useState("");
   let page = "";
@@ -36,6 +39,54 @@ const InputField = ({
   let otpmessage = "";
   let AccountHolderName = "";
   let transferBlock = "";
+
+  const handleClick = () => {
+    if (message === "Enter Account Number") {
+      if (accountNo.length === 14) {
+        CheckReceiverAcc();
+      } else {
+        setErrorMessage("Please Enter valid 14 digits account numbers");
+      }
+    } else if (message === "Enter Pin") {
+      if (transactionType === "inquiry") {
+        if (pin.length == 4) {
+          balanceCheck();
+        } else {
+          setErrorMessage("Please Enter valid 4 digits Pin");
+        }
+      } else if (transactionType === "withdrawal") {
+        if (pin.length === 4) {
+          Withdrawal();
+        } else {
+          setErrorMessage("Please Enter valid 4 digits Pin");
+        }
+      } else if (transactionType === "Fund Transfer") {
+        if (pin.length === 4) {
+          transferAmt();
+        } else {
+          setErrorMessage("Please Enter valid 4 digits Pin");
+        }
+      } else if (transactionType === "deposit") {
+        if (pin.length === 4) {
+          depositAmount();
+        } else {
+          setErrorMessage("Please Enter valid 4 digits Pin");
+        }
+      }
+    } else if (message === "Enter Amount") {
+      if (transactionType === "transfer") {
+        setTranferAmt();
+      } else if (transactionType === "withdrawal" && disable === 0) {
+        AmountCheck();
+      }
+    } else if (message === "Enter OTP") {
+      if (otp.length === 6) {
+        verifyOTPWithdrawal();
+      } else {
+        setErrorMessage("Enter 6 digit OTP");
+      }
+    }
+  };
   // let loading = 0;
   if (transactionType === "transfer") {
     // AccountHolderName = {ReceiverAccountHolder};
@@ -123,6 +174,11 @@ const InputField = ({
           //   border: "2px solid red",
         }}
       >
+        {errormessage !== "" ? (
+          <Alert message={errormessage} type="error" showIcon />
+        ) : (
+          ""
+        )}
         {transferBlock}
         <div
           style={{
@@ -171,15 +227,15 @@ const InputField = ({
                 ? accountNo.length < 14
                 : Amount.length < 0} */}
               <Button
-                disabled={
-                  message === "Enter Pin"
-                    ? pin.length < 4
-                    : message === "Enter OTP"
-                    ? otp.length < 6
-                    : message === "Enter Account Number"
-                    ? accountNo.length < 14
-                    : Amount.length < 0
-                }
+                // disabled={
+                //   message === "Enter Pin"
+                //     ? pin.length < 4
+                //     : message === "Enter OTP"
+                //     ? otp.length < 6
+                //     : message === "Enter Account Number"
+                //     ? accountNo.length < 14
+                //     : Amount.length < 0
+                // }
                 style={{
                   backgroundColor: "#0E77BD",
                   width: "100px",
@@ -191,55 +247,7 @@ const InputField = ({
                   borderRadius: "5px",
                 }}
                 onClick={() => {
-                  // console.log("i m here");
-                  if (
-                    message === "Enter Account Number" &&
-                    accountNo.length === 14
-                  ) {
-                    CheckReceiverAcc();
-                  }
-                  if (
-                    message === "Enter Pin" &&
-                    transactionType === "inquiry" &&
-                    pin.length === 4
-                  ) {
-                    balanceCheck();
-                  } else if (
-                    message === "Enter Pin" &&
-                    transactionType === "withdrawal"
-                  ) {
-                    Withdrawal();
-                  } else if (
-                    message === "Enter Pin" &&
-                    transactionType === "Fund Transfer"
-                  ) {
-                    transferAmt();
-                  }
-                  if (
-                    message === "Enter Amount" &&
-                    transactionType === "transfer"
-                  ) {
-                    setTranferAmt();
-                  }
-                  if (
-                    message === "Enter Amount" &&
-                    transactionType === "withdrawal"
-                  ) {
-                    // handlePageChange(page);
-
-                    AmountCheck();
-                  }
-                  if (
-                    message === "Enter Pin" &&
-                    transactionType === "deposit"
-                  ) {
-                    depositAmount();
-                  }
-                  if (message === "Enter OTP") {
-                    if (otp.length === 6) {
-                      verifyOTPWithdrawal();
-                    }
-                  }
+                  handleClick();
                 }}
               >
                 {buttonText}

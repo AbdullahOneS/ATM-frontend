@@ -38,7 +38,9 @@ const Homepage = () => {
   const [currentPage, setCurrentPage] = useState("");
   //withdrawal data
   const [withdrawalAmt, setWithdrawalAmt] = useState(0);
+  const [errormessage, setErrorMessage] = useState("");
   const [accountNOReport, setAccountNOReport] = useState("");
+  const [disable, setDisable] = useState(0);
   const [denominations, setDenominations] = useState({
     n_100: 0,
     n_200: 0,
@@ -159,7 +161,8 @@ const Homepage = () => {
 
   const handlePageChange = async (pageKey, message, type) => {
     play();
-    console.log(pageKey, type);
+    // console.log(pageKey, type);
+    setErrorMessage("");
     // if (message == "success") {
     if (type) {
       setData((prev) => ({
@@ -171,6 +174,8 @@ const Homepage = () => {
     if (pageKey === "Welcome") {
       setDepositAmount(0);
       setEmailOTP("");
+      setDisable(0);
+
       setDepoDenominations({ n_100: 0, n_200: 0, n_500: 0, n_2000: 0 });
     }
     // }
@@ -297,6 +302,7 @@ const Homepage = () => {
       if (result.data.status === 200) {
         setEmailOTP(result.data.email);
         // setEmail(result.data.email)
+        setDisable(0);
         handlePageChange("InputFieldEnterOTP");
       } else {
         // handlePageChange("Error", result.data.message);
@@ -357,7 +363,7 @@ const Homepage = () => {
 
   const AmountCheck = async () => {
     console.log("i m amt check");
-    // setLoading(1);
+    setDisable(1);
     try {
       var result = await Api.post("transaction-quota", {
         card_no: data.cardNo,
@@ -376,7 +382,7 @@ const Homepage = () => {
           } else if (atmDenominations.n_2000 > 0) {
             min_note = 2000;
           } else {
-            handlePageChange("Error", "No Cash to Dispence");
+            handlePageChange("Error", "No Cash to Dispense");
           }
           let totalAtmAmt =
             atmDenominations.n_100 * 100 +
@@ -384,16 +390,23 @@ const Homepage = () => {
             atmDenominations.n_500 * 500 +
             atmDenominations.n_2000 * 2000;
           // console.log(atmDenominations);
-          if (totalAtmAmt > screenOutput && screenOutput % min_note === 0) {
-            setData((prev) => ({
-              ...prev,
-              amount: screenOutput,
-            }));
-            if (Number(screenOutput) > Number("10000")) {
-              // console.log(screenOutput);
-              sendOTPWithdraw();
+          if (totalAtmAmt > screenOutput) {
+            if (screenOutput % min_note === 0) {
+              setData((prev) => ({
+                ...prev,
+                amount: screenOutput,
+              }));
+              if (Number(screenOutput) > Number("10000")) {
+                // console.log(screenOutput);
+                sendOTPWithdraw();
+              } else {
+                handlePageChange("Denominationw");
+              }
             } else {
-              handlePageChange("Denominationw");
+              handlePageChange(
+                "Error",
+                `Amount should be multiple of ${min_note}`
+              );
             }
           } else {
             handlePageChange("Error", "No Cash to Dispense");
@@ -618,6 +631,8 @@ const Homepage = () => {
         //// yet to sort
         if (screenOutput.length === 4) {
           Withdrawal();
+        } else {
+          setErrorMessage("Enter valid 4 digit pin");
         }
       } else if (
         currentPage === "InputFieldEnterPin" &&
@@ -625,14 +640,18 @@ const Homepage = () => {
       ) {
         if (screenOutput.length === 4) {
           balanceCheck();
+        } else {
+          setErrorMessage("Please Enter valid 4 digit pin");
         }
-      } else if (currentPage === "InputFieldEnterAmount") {
+      } else if (currentPage === "InputFieldEnterAmount" && disable === 0) {
         //function to called
         AmountCheck();
       } else if (currentPage === "InputFieldEnterAccNo") {
         if (screenOutput.length === 14) {
           // handlePageChange("InputFieldTTtransfer");
           CheckReceiverAcc();
+        } else {
+          setErrorMessage("Please Enter valid 14 digit account number");
         }
       } else if (currentPage === "InputFieldTTtransfer") {
         setTranferAmt();
@@ -642,6 +661,8 @@ const Homepage = () => {
       ) {
         if (screenOutput.length === 4) {
           transferAmt();
+        } else {
+          setErrorMessage("Please Enter 4 digit pin");
         }
       } else if (
         currentPage === "InputFieldEnterPin" &&
@@ -649,6 +670,8 @@ const Homepage = () => {
       ) {
         if (screenOutput.length === 4) {
           depositAmount();
+        } else {
+          setErrorMessage("Please Enter valid 4 digit pin");
         }
       } else if (currentPage === "Report") {
         if (reportData.buttonText === "Proceed") {
@@ -704,6 +727,7 @@ const Homepage = () => {
     <>
       {/* {currentPage}
       {data.transactiontype} */}
+      {/* {disable} */}
       <div className="home">
         <div id="output-screen">
           {pages.Welcome ? <Welcome handlePageChange={handlePageChange} /> : ""}
@@ -770,6 +794,8 @@ const Homepage = () => {
               ReceiverAccountHolder={receiverAccountHolderName} //send name of receiver
               Amount={screenOutput}
               setTranferAmt={setTranferAmt}
+              errormessage={errormessage}
+              setErrorMessage={setErrorMessage}
             />
           ) : (
             ""
@@ -782,6 +808,9 @@ const Homepage = () => {
               // setWithdrawalAmt={setWithdrawalAmt}
               AmountCheck={AmountCheck}
               transactionType="withdrawal"
+              disable={disable}
+              errormessage={errormessage}
+              setErrorMessage={setErrorMessage}
             />
           ) : (
             ""
@@ -796,6 +825,8 @@ const Homepage = () => {
               transactionType={data.transactiontype}
               transferAmt={transferAmt}
               depositAmount={depositAmount}
+              errormessage={errormessage}
+              setErrorMessage={setErrorMessage}
             />
           ) : (
             ""
@@ -807,6 +838,8 @@ const Homepage = () => {
               otp={screenOutput}
               resendlink={sendOTPWithdraw}
               verifyOTPWithdrawal={verifyOTPWithdrawal}
+              errormessage={errormessage}
+              setErrorMessage={setErrorMessage}
             />
           ) : (
             ""
@@ -817,6 +850,8 @@ const Homepage = () => {
               handlePageChange={handlePageChange}
               accountNo={screenOutput}
               CheckReceiverAcc={CheckReceiverAcc}
+              errormessage={errormessage}
+              setErrorMessage={setErrorMessage}
             />
           ) : (
             ""

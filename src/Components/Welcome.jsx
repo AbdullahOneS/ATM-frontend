@@ -26,7 +26,7 @@ const Welcome = ({ handlePageChange }) => {
           // padding: "10%",
           fontFamily: "Arvo, serif",
           width: "100%",
-          // position: "relative",
+          position: "relative",
         }}
       >
         <div
@@ -80,8 +80,8 @@ const Welcome = ({ handlePageChange }) => {
           style={{
             // border: "1px solid green",
             position: "absolute",
-            bottom: "10%",
-            width: "45%",
+            bottom: "3%",
+            width: "100%",
           }}
         >
           {/* rasik */}

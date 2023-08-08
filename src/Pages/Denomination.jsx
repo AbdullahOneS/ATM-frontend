@@ -41,6 +41,73 @@ const Denomination = ({
     denominationSugg(atmDenominations, withdrawalAmt);
   }, []);
 
+  const denominationRemainingSugg = (
+    denominations,
+    ReaminingWithdrawalAmt,
+    alreadySelectedDeno
+  ) => {
+    let n_2000 = 0;
+    let n_500 = 0;
+    let n_200 = 0;
+    let n_100 = 0;
+    if (
+      ReaminingWithdrawalAmt >= 2000 &&
+      denominations.n_2000 > alreadySelectedDeno.n_2000
+    ) {
+      n_2000 = Math.floor(ReaminingWithdrawalAmt / 2000);
+      if (denominations.n_2000 < n_2000 + alreadySelectedDeno.n_2000) {
+        n_2000 = denominations.n_2000 - alreadySelectedDeno.n_2000;
+      }
+      ReaminingWithdrawalAmt -= 2000 * n_2000;
+    }
+    if (
+      ReaminingWithdrawalAmt >= 500 &&
+      denominations.n_500 > alreadySelectedDeno.n_500
+    ) {
+      n_500 = Math.floor(ReaminingWithdrawalAmt / 500);
+      if (denominations.n_500 < n_500 + alreadySelectedDeno.n_500) {
+        n_500 = denominations.n_500 - alreadySelectedDeno.n_500;
+      }
+      ReaminingWithdrawalAmt -= 500 * n_500;
+    }
+    if (
+      ReaminingWithdrawalAmt >= 200 &&
+      denominations.n_200 > alreadySelectedDeno.n_200
+    ) {
+      n_200 = Math.floor(ReaminingWithdrawalAmt / 200);
+      if (denominations.n_200 < n_200 + alreadySelectedDeno.n_200) {
+        n_200 = denominations.n_200 - alreadySelectedDeno.n_200;
+      }
+      ReaminingWithdrawalAmt -= 200 * n_200;
+    }
+    if (
+      ReaminingWithdrawalAmt >= 100 &&
+      denominations.n_100 > alreadySelectedDeno.n_2000
+    ) {
+      n_100 = Math.floor(ReaminingWithdrawalAmt / 100);
+      if (denominations.n_100 < n_100 + alreadySelectedDeno.n_2000) {
+        n_100 = denominations.n_100 - alreadySelectedDeno.n_2000;
+      }
+      ReaminingWithdrawalAmt -= 100 * n_100;
+    }
+    // console.log(n_2000, n_500, n_200, n_100);
+    // console.log(n_2000 * 2000 + n_500 * 500 + n_200 * 200 + n_100 * 100);
+    setsuggDenominations({
+      n_100: n_100 + alreadySelectedDeno.n_100,
+      n_200: n_200 + alreadySelectedDeno.n_200,
+      n_500: n_500 + alreadySelectedDeno.n_500,
+      n_2000: n_2000 + alreadySelectedDeno.n_2000,
+    });
+    setremainingAmt(0);
+  };
+
+  const isAmountNotEqual = () =>
+    suggDenominations.n_100 * 100 +
+      suggDenominations.n_200 * 200 +
+      suggDenominations.n_500 * 500 +
+      suggDenominations.n_2000 * 2000 !==
+    parseInt(withdrawalAmt);
+
   const handleIncrement = (value) => {
     let totalAmount =
       suggDenominations.n_100 * 100 +
@@ -320,27 +387,33 @@ const Denomination = ({
 
           <Form form={form} name="horizontal_login">
             <Form.Item shouldUpdate>
-              {() => (
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  disabled={
-                    suggDenominations.n_100 * 100 +
-                      suggDenominations.n_200 * 200 +
-                      suggDenominations.n_500 * 500 +
-                      suggDenominations.n_2000 * 2000 !==
-                    parseInt(withdrawalAmt)
-                      ? true
-                      : false
-                  }
-                  onClick={() => {
-                    setDenominations(suggDenominations);
-                    handlePageChange("InputFieldEnterPin");
-                  }}
-                >
-                  Proceed
-                </Button>
-              )}
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={isAmountNotEqual() ? true : false}
+                onClick={() => {
+                  setDenominations(suggDenominations);
+                  handlePageChange("InputFieldEnterPin");
+                }}
+              >
+                Proceed
+              </Button>
+
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={isAmountNotEqual() ? false : true}
+                onClick={() => {
+                  denominationRemainingSugg(
+                    atmDenominations,
+                    remainingAmt,
+                    suggDenominations
+                  );
+                }}
+                style={{ marginLeft: "10px" }}
+              >
+                Auto Suggest
+              </Button>
             </Form.Item>
           </Form>
         </div>
