@@ -50,32 +50,40 @@ const Denominationdepo = ({
 
   const handleDecrement = (value) => {
     if (value === 100) {
-      setDepoDenominations({
-        ...depoDenominations,
-        n_100: depoDenominations.n_100 - 1,
-      });
-      setDepositAmount((pre) => pre - 100);
+      if (depoDenominations.n_100 != 0) {
+        setDepoDenominations({
+          ...depoDenominations,
+          n_100: depoDenominations.n_100 - 1,
+        });
+        setDepositAmount((pre) => pre - 100);
+      }
     }
     if (value === 200) {
-      setDepoDenominations({
-        ...depoDenominations,
-        n_200: depoDenominations.n_200 - 1,
-      });
-      setDepositAmount((pre) => pre - 200);
+      if (depoDenominations.n_200 != 0) {
+        setDepoDenominations({
+          ...depoDenominations,
+          n_200: depoDenominations.n_200 - 1,
+        });
+        setDepositAmount((pre) => pre - 200);
+      }
     }
     if (value === 500) {
-      setDepoDenominations({
-        ...depoDenominations,
-        n_500: depoDenominations.n_500 - 1,
-      });
-      setDepositAmount((pre) => pre - 500);
+      if (depoDenominations.n_500 != 0) {
+        setDepoDenominations({
+          ...depoDenominations,
+          n_500: depoDenominations.n_500 - 1,
+        });
+        setDepositAmount((pre) => pre - 500);
+      }
     }
     if (value === 2000) {
-      setDepoDenominations({
-        ...depoDenominations,
-        n_2000: depoDenominations.n_2000 - 1,
-      });
-      setDepositAmount((pre) => pre - 2000);
+      if (depoDenominations != 0) {
+        setDepoDenominations({
+          ...depoDenominations,
+          n_2000: depoDenominations.n_2000 - 1,
+        });
+        setDepositAmount((pre) => pre - 2000);
+      }
     }
   };
 

@@ -284,6 +284,12 @@ const Denomination = ({
       }
       withdrawalAmt -= 100 * n_100;
     }
+    if (withdrawalAmt !== 0) {
+      handlePageChange(
+        "Error",
+        "Sorry, no appropriate denominations for this amount; please try a different amount."
+      );
+    }
     setsuggDenominations({
       n_100: n_100,
       n_200: n_200,
