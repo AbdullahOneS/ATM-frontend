@@ -625,6 +625,8 @@ const Homepage = () => {
       } else if (currentPage === "InsertCard") {
         if (screenOutput.length === 16) {
           cardVerify();
+        } else {
+          setErrorMessage("Please enter valid 16 digit card number");
         }
       } else if (currentPage === "Denominationd") {
         if (DepositAmount !== 0) {
@@ -743,6 +745,7 @@ const Homepage = () => {
               handlePageChange={handlePageChange}
               cardNumber={screenOutput}
               cardVerify={cardVerify}
+              errormessage={errormessage}
             />
           ) : (
             ""

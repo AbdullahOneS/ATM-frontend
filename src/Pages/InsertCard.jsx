@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import Card from "../Components/Card";
 import Options from "./Options";
 
@@ -10,9 +10,7 @@ import Api from "../Api";
 const InsertCard = ({
   title,
   handlePageChange,
-  // setCardNo,
-  // setCardHolder,
-  // cardHolder,
+  errormessage,
   cardNumber,
   cardVerify,
 }) => {
@@ -99,13 +97,21 @@ const InsertCard = ({
       <div
         style={{
           display: "flex",
-          justifyContent: "center",
+          flexDirection: "column",
+          justifyContent: "space-evenly",
           alignItems: "center",
           width: "100%",
           height: "100%",
           backgroundColor: "#76C0DB",
         }}
       >
+        {/* {message !== "" ? <div className="Error-box">{message}</div> : ""} */}
+        {/* {message !== "" ? <div className="Error-box">{message}</div> : ""} */}
+        {errormessage !== "" ? (
+          <Alert message={errormessage} type="error" showIcon closable />
+        ) : (
+          ""
+        )}
         <div
           style={{
             display: "flex",

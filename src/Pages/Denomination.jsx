@@ -133,7 +133,7 @@ const Denomination = ({
           setMessage(`Cannot add more ${value} notes.`);
         }
       } else {
-        setMessage(`No cash to dispense.`);
+        setMessage(`No more ₹${value} notes `);
       }
     } else if (value === 200) {
       if (suggDenominations.n_200 < atmDenominations.n_200) {
@@ -152,7 +152,7 @@ const Denomination = ({
           setMessage(`Cannot add more ${value} notes.`);
         }
       } else {
-        setMessage(`No cash to dispense.`);
+        setMessage(`No more ₹${value} notes `);
       }
     } else if (value === 500) {
       if (suggDenominations.n_500 < atmDenominations.n_500) {
@@ -171,7 +171,7 @@ const Denomination = ({
           setMessage(`Cannot add more ${value} notes.`);
         }
       } else {
-        setMessage(`No cash to dispense.`);
+        setMessage(`No more ₹${value} notes `);
       }
     } else if (value === 2000) {
       if (suggDenominations.n_2000 < atmDenominations.n_2000) {
@@ -190,7 +190,7 @@ const Denomination = ({
           setMessage(`Cannot add more ${value} notes.`);
         }
       } else {
-        setMessage(`No cash to dispense.`);
+        setMessage(`No more ₹${value} notes `);
       }
     }
   };
@@ -299,7 +299,7 @@ const Denomination = ({
       <div style={{ display: "block", margin: "10px" }}>
         {/* {message !== "" ? <div className="Error-box">{message}</div> : ""} */}
         {message !== "" ? (
-          <Alert message={message} type="error" showIcon />
+          <Alert message={message} type="error" showIcon closable />
         ) : (
           ""
         )}

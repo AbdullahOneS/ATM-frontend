@@ -113,7 +113,13 @@ const ReceiptTemplate = ({
             marginTop: "8%",
           }}
         >
-          <span style={{ textAlign: "left" }}>Transaction {status}</span>
+          <span style={{ textAlign: "left" }}>
+            {status === "Successful" ? (
+              <span style={{ color: "green" }}>Transaction {status}</span>
+            ) : (
+              <span style={{ color: "red" }}>{status}</span>
+            )}
+          </span>
         </div>
 
         {balance === "" ? (

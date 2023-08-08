@@ -175,7 +175,7 @@ const InputField = ({
         }}
       >
         {errormessage !== "" ? (
-          <Alert message={errormessage} type="error" showIcon />
+          <Alert message={errormessage} type="error" showIcon closable />
         ) : (
           ""
         )}
